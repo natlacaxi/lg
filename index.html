@@ -5,8 +5,1498 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Liquid Glass - Démo complète</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="bank.css" />
+    <style>
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #e7eeef;
+    --text-primary: #1a1a2e;
+    --text-secondary: rgba(0, 0, 0, 0.7);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --panel-bg: rgba(255, 255, 255, 0.9);
+}
+
+/* Track inside clone */
+.switch-thumb-clone-inner::before {
+    content: "";
+    position: absolute;
+    left: var(--track-left, 0);
+    top: var(--track-top, 0);
+    width: 167px;
+    height: 68px;
+    border-radius: 33.5px;
+    background-color: var(--switch-track-color, #94949f77);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1b1b22;
+        --bg-secondary: #0f0f14;
+        --text-primary: #f0f0f5;
+        --text-secondary: rgba(255, 255, 255, 0.7);
+        --border-color: rgba(255, 255, 255, 0.1);
+        --panel-bg: rgba(30, 30, 40, 0.9);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+        sans-serif;
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    min-height: 100vh;
+    color: var(--text-primary);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.browser-notice {
+    background: linear-gradient(
+        135deg,
+        rgba(102, 126, 234, 0.1),
+        rgba(118, 75, 162, 0.1)
+    );
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.browser-notice-icon {
+    font-size: 1.5rem;
+}
+
+.browser-notice-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.demo-section {
+    margin-bottom: 3rem;
+}
+
+.demo-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.demo-title::before {
+    content: "";
+    width: 4px;
+    height: 1.25rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.demo-area {
+    position: relative;
+    height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        radial-gradient(
+            120% 100% at 10% 0%,
+            var(--bg-primary),
+            var(--bg-secondary)
+        );
+    background-size:
+        24px 24px,
+        24px 24px,
+        100% 100%;
+    background-position:
+        12px 12px,
+        12px 12px,
+        0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .demo-area {
+        background-image:
+            linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            radial-gradient(
+                120% 100% at 10% 0%,
+                var(--bg-primary),
+                var(--bg-secondary)
+            );
+    }
+}
+
+.demo-content {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    .demo-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.demo-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.demo-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #e53e3e;
+    margin-bottom: 1rem;
+}
+
+.demo-label-line {
+    height: 2px;
+    width: 40px;
+    background: currentColor;
+}
+
+.demo-label-text {
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.demo-heading {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    margin: 0 0 1rem 0;
+}
+
+.demo-heading-dim {
+    opacity: 0.4;
+}
+
+.demo-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.demo-description p {
+    margin: 0 0 0.75rem 0;
+}
+
+.demo-image {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.demo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.glass-element {
+    position: absolute;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    will-change: transform;
+    overflow: hidden;
+}
+
+.glass-element:active {
+    cursor: grabbing;
+}
+
+.glass-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    will-change: transform, box-shadow;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.glass-content-clone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 1;
+    will-change: filter;
+    contain: strict;
+}
+
+/* Hide clone when using native backdrop-filter */
+.use-backdrop-filter .glass-content-clone {
+    display: none;
+}
+
+.glass-content-clone .demo-content-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    pointer-events: none;
+    will-change: transform;
+    contain: layout style paint;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        radial-gradient(
+            120% 100% at 10% 0%,
+            var(--bg-primary),
+            var(--bg-secondary)
+        );
+    background-size:
+        24px 24px,
+        24px 24px,
+        100% 100%;
+    background-position:
+        12px 12px,
+        12px 12px,
+        0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .glass-content-clone .demo-content-inner {
+        background-image:
+            linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            radial-gradient(
+                120% 100% at 10% 0%,
+                var(--bg-primary),
+                var(--bg-secondary)
+            );
+    }
+}
+
+@media (max-width: 768px) {
+    .glass-content-clone .demo-content-inner {
+        grid-template-columns: 1fr;
+    }
+}
+
+.glass-content-clone .demo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.glass-filter-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Native backdrop-filter for supported browsers */
+.use-backdrop-filter .glass-inner {
+    backdrop-filter: url(#liquidGlassFilter);
+    -webkit-backdrop-filter: url(#liquidGlassFilter);
+}
+
+.controls-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.controls-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.controls-header-text {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.controls-header-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.control-row:last-child {
+    margin-bottom: 0;
+}
+
+.control-label {
+    width: 160px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.control-value {
+    width: 50px;
+    text-align: right;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 11px;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.control-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: rgba(128, 128, 128, 0.2);
+    border-radius: 1px;
+    outline: none;
+}
+
+.control-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.control-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.control-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    cursor: pointer;
+    border: none;
+}
+
+/* Boutons alignés sur UNE seule ligne (défilement horizontal si l'écran est étroit) */
+.surface-selector {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.surface-selector::-webkit-scrollbar {
+    display: none;
+}
+
+.surface-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.surface-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+}
+
+.surface-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: transparent;
+}
+
+.mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mode-toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.mode-toggle-switch.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.mode-toggle-switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mode-toggle-switch.active::after {
+    transform: translateX(20px);
+}
+
+.mode-toggle-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.8;
+}
+
+.mode-toggle-value {
+    font-size: 10px;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    opacity: 0.6;
+    min-width: 100px;
+}
+
+.mode-unsupported {
+    font-size: 10px;
+    color: #e53e3e;
+    opacity: 0.8;
+}
+
+.mode-notice {
+    font-size: 11px;
+    opacity: 0.7;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .preview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preview-card {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.preview-header {
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 9px;
+    opacity: 0.7;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.preview-content {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+    background: #1a1a2e;
+}
+
+.preview-canvas {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.footer a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.filter-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* ===== Slider Demo Styles ===== */
+.slider-demo-area {
+    height: 384px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slider-container {
+    position: relative;
+    width: 330px;
+    height: 60px;
+}
+
+.slider-track {
+    display: inline-block;
+    position: absolute;
+    width: 330px;
+    height: 14px;
+    left: 0;
+    top: 23px; /* (60 - 14) / 2 */
+    background-color: #89898f66;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.slider-track-inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 7px;
+}
+
+.slider-fill {
+    height: 14px;
+    width: 10%;
+    border-radius: 6px;
+    background-color: #0377f7;
+}
+
+.slider-thumb {
+    position: absolute;
+    width: 90px;
+    height: 60px;
+    top: 0;
+    border-radius: 30px;
+    transform: scale(0.6);
+    transform-origin: center center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    will-change: transform, background-color;
+}
+
+.slider-thumb-clone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 1;
+    opacity: 0;
+    will-change: opacity;
+}
+
+.slider-thumb-clone-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        radial-gradient(
+            120% 100% at 10% 0%,
+            var(--bg-primary),
+            var(--bg-secondary)
+        );
+    background-size:
+        24px 24px,
+        24px 24px,
+        100% 100%;
+    background-position:
+        12px 12px,
+        12px 12px,
+        0 0;
+}
+
+/* Track inside clone */
+.slider-thumb-clone-inner::before {
+    content: "";
+    position: absolute;
+    left: var(--track-left, 0);
+    top: var(--track-top, 0);
+    width: 330px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: #89898f66;
+    overflow: hidden;
+}
+
+/* Fill inside clone */
+.slider-thumb-clone-inner::after {
+    content: "";
+    position: absolute;
+    left: var(--track-left, 0);
+    top: var(--track-top, 0);
+    width: calc(330px * var(--fill-width, 10) / 100);
+    height: 14px;
+    border-radius: 6px;
+    background-color: #0377f7;
+}
+
+@media (prefers-color-scheme: dark) {
+    .slider-thumb-clone-inner {
+        background-image:
+            linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            radial-gradient(
+                120% 100% at 10% 0%,
+                var(--bg-primary),
+                var(--bg-secondary)
+            );
+    }
+}
+
+.slider-thumb-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* ===== Switch Demo Styles ===== */
+.switch-demo-area {
+    height: 384px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.switch-container {
+    position: relative;
+}
+
+.switch-track {
+    display: inline-block;
+    position: relative;
+    width: 160px;
+    height: 67px;
+    background-color: #94949f77;
+    border-radius: 33.5px;
+    cursor: pointer;
+}
+
+.switch-thumb {
+    position: absolute;
+    width: 146px;
+    height: 92px;
+    border-radius: 46px;
+    top: 33.5px; /* trackHeight / 2 */
+    transform: translateY(-50%) scale(0.65);
+    transform-origin: center center;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 22px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    will-change: transform, left, background-color, box-shadow;
+}
+
+.switch-thumb-clone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 1;
+    opacity: 0;
+    will-change: opacity;
+}
+
+.switch-thumb-clone-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        radial-gradient(
+            120% 100% at 10% 0%,
+            var(--bg-primary),
+            var(--bg-secondary)
+        );
+    background-size:
+        24px 24px,
+        24px 24px,
+        100% 100%;
+    background-position:
+        12px 12px,
+        12px 12px,
+        0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .switch-thumb-clone-inner {
+        background-image:
+            linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            radial-gradient(
+                120% 100% at 10% 0%,
+                var(--bg-primary),
+                var(--bg-secondary)
+            );
+    }
+}
+
+.switch-thumb-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* Force active label */
+.force-active-label {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    .force-active-label {
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.force-active-label input {
+    accent-color: #667eea;
+}
+
+/* =====================================================================
+   BANK.CSS — extensions de la démo Liquid Glass
+   Navigation, presets en ligne, banque de curseurs, interrupteurs,
+   curseurs souris, télémétrie, toast
+   ===================================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ---------- Navigation collante ---------- */
+.top-nav {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0.4rem;
+    margin: 0 0 2rem 0;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--panel-bg);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
+}
+
+.top-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.top-nav a {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    text-decoration: none;
+    opacity: 0.75;
+    transition: all 0.15s ease;
+}
+
+.top-nav a:hover {
+    opacity: 1;
+    background: rgba(102, 126, 234, 0.12);
+}
+
+.top-nav a.is-active {
+    opacity: 1;
+    color: #fff;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* ---------- Boutons de presets (même style que .surface-btn) ---------- */
+.preset-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: inherit;
+}
+
+.preset-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+}
+
+.preset-btn.is-active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border-color: transparent;
+}
+
+.preset-btn.is-action {
+    border-style: dashed;
+}
+
+/* ---------- Introductions de section ---------- */
+.bank-intro {
+    margin: -0.25rem 0 1.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    max-width: 780px;
+}
+
+.bank-group {
+    margin-bottom: 2rem;
+}
+
+.bank-group .controls-header {
+    margin-bottom: 1rem;
+}
+
+.bank-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 420px) {
+    .bank-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Carte générique ---------- */
+.bank-card {
+    background: var(--panel-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.bank-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bank-card-title {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 9.5px;
+    opacity: 0.75;
+}
+
+.bank-card-value {
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 11px;
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+}
+
+.bank-card-note {
+    padding: 0.55rem 1rem 0.7rem;
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.6;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Zone de démo (même fond quadrillé que .demo-area) ---------- */
+.bank-area {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        radial-gradient(
+            120% 100% at 10% 0%,
+            var(--bg-primary),
+            var(--bg-secondary)
+        );
+    background-size:
+        24px 24px,
+        24px 24px,
+        100% 100%;
+    background-position:
+        12px 12px,
+        12px 12px,
+        0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .bank-area {
+        background-image:
+            linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            radial-gradient(
+                120% 100% at 10% 0%,
+                var(--bg-primary),
+                var(--bg-secondary)
+            );
+    }
+}
+
+/* ---------- Curseurs en verre ---------- */
+.bank-slider {
+    position: relative;
+    flex: none;
+}
+
+.bank-track {
+    position: absolute;
+    left: 0;
+    cursor: pointer;
+    touch-action: none;
+}
+
+.bank-track-inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.bank-fill {
+    height: 100%;
+    width: 0;
+}
+
+.bank-thumb {
+    position: absolute;
+    top: 0;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transform-origin: center center;
+    will-change: transform, background-color;
+    outline: none;
+}
+
+.bank-thumb:focus-visible {
+    box-shadow:
+        0 0 0 3px rgba(102, 126, 234, 0.65),
+        0 3px 14px rgba(0, 0, 0, 0.1);
+}
+
+.bank-thumb-clone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 1;
+    opacity: 0;
+    display: none;
+    will-change: opacity;
+}
+
+.bank-thumb-clone-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        radial-gradient(
+            120% 100% at 10% 0%,
+            var(--bg-primary),
+            var(--bg-secondary)
+        );
+    background-size:
+        24px 24px,
+        24px 24px,
+        100% 100%;
+    background-position:
+        12px 12px,
+        12px 12px,
+        0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .bank-thumb-clone-inner {
+        background-image:
+            linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px
+            ),
+            radial-gradient(
+                120% 100% at 10% 0%,
+                var(--bg-primary),
+                var(--bg-secondary)
+            );
+    }
+}
+
+.bank-clone-track {
+    position: absolute;
+    overflow: hidden;
+}
+
+.bank-clone-fill {
+    height: 100%;
+    width: 0;
+}
+
+.bank-thumb-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* ---------- Interrupteurs en verre ---------- */
+.bank-switch-box {
+    position: relative;
+    flex: none;
+}
+
+.bank-switch-track {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.bank-switch-thumb {
+    position: absolute;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 22px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transform-origin: center center;
+    will-change: transform, left, background-color, box-shadow;
+    outline: none;
+}
+
+.bank-switch-thumb:focus-visible {
+    box-shadow:
+        0 0 0 4px rgba(102, 126, 234, 0.65),
+        0 4px 22px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- Banque de curseurs souris ---------- */
+.cursor-toolbar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.cursor-toolbar::-webkit-scrollbar {
+    display: none;
+}
+
+.cursor-search {
+    flex: 1;
+    min-width: 180px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--panel-bg);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+}
+
+.cursor-search:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.cursor-count {
+    flex-shrink: 0;
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 11px;
+    opacity: 0.6;
+}
+
+.cursor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.cursor-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 92px;
+    padding: 0.9rem 0.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.55),
+            rgba(255, 255, 255, 0.18)
+        ),
+        var(--panel-bg);
+    backdrop-filter: blur(12px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .cursor-tile {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.07),
+                rgba(255, 255, 255, 0.02)
+            ),
+            var(--panel-bg);
+        box-shadow:
+            0 4px 18px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+}
+
+.cursor-tile:hover {
+    transform: translateY(-2px);
+    border-color: #667eea;
+    box-shadow:
+        0 10px 28px rgba(102, 126, 234, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cursor-tile:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.cursor-tile-glyph {
+    font-size: 22px;
+    line-height: 1;
+    opacity: 0.85;
+}
+
+.cursor-tile-name {
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.cursor-tile-hint {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.cursor-tile:hover .cursor-tile-hint {
+    opacity: 0.55;
+}
+
+.cursor-empty {
+    grid-column: 1 / -1;
+    padding: 2rem;
+    text-align: center;
+    opacity: 0.55;
+    font-size: 13px;
+}
+
+/* ---------- Télémétrie ---------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.75rem;
+}
+
+.stat-tile {
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--panel-bg);
+}
+
+.stat-label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 9px;
+    opacity: 0.6;
+    margin-bottom: 0.4rem;
+}
+
+.stat-value {
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 17px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-value small {
+    font-size: 11px;
+    opacity: 0.55;
+    font-weight: 400;
+}
+
+.tool-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tool-row::-webkit-scrollbar {
+    display: none;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 999;
+    transform: translate(-50%, 24px);
+    padding: 0.65rem 1.1rem;
+    border-radius: 999px;
+    font-size: 12px;
+    color: #fff;
+    background: rgba(26, 26, 46, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    max-width: calc(100vw - 32px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* ---------- Réduction des animations ---------- */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    .cursor-tile,
+    .toast,
+    .top-nav a {
+        transition: none;
+    }
+}
+
+    </style>
 </head>
 
 <body>
@@ -501,9 +1991,2905 @@
             <p>Based on Apple's Liquid Glass effect from WWDC 2025.</p>
         </footer>
     </div>
+    <script>
+// Surface equations - define the height profile of the glass bezel
+const SurfaceEquations = {
+  convex_circle: (x) => Math.sqrt(1 - Math.pow(1 - x, 2)),
+  convex_squircle: (x) => Math.pow(1 - Math.pow(1 - x, 4), 1 / 4),
+  concave: (x) => 1 - Math.sqrt(1 - Math.pow(x, 2)),
+  lip: (x) => {
+    const convex = Math.pow(1 - Math.pow(1 - Math.min(x * 2, 1), 4), 1 / 4);
+    const concave = 1 - Math.sqrt(1 - Math.pow(1 - x, 2)) + 0.1;
+    const smootherstep =
+      6 * Math.pow(x, 5) - 15 * Math.pow(x, 4) + 10 * Math.pow(x, 3);
+    return convex * (1 - smootherstep) + concave * smootherstep;
+  },
+};
 
-    <script src="scripts.js"></script>
-    <script src="bank.js"></script>
+// Simple spring physics class
+class Spring {
+  constructor(value, stiffness = 300, damping = 20) {
+    this.value = value;
+    this.target = value;
+    this.velocity = 0;
+    this.stiffness = stiffness;
+    this.damping = damping;
+  }
+
+  setTarget(target) {
+    this.target = target;
+  }
+
+  update(dt) {
+    const force = (this.target - this.value) * this.stiffness;
+    const dampingForce = this.velocity * this.damping;
+    this.velocity += (force - dampingForce) * dt;
+    this.value += this.velocity * dt;
+    return this.value;
+  }
+
+  isSettled() {
+    return (
+      Math.abs(this.target - this.value) < 0.001 &&
+      Math.abs(this.velocity) < 0.001
+    );
+  }
+}
+
+// State
+const state = {
+  surfaceType: "convex_squircle",
+  bezelWidth: 30,
+  glassThickness: 150,
+  refractiveIndex: 1.5,
+  refractionScale: 1.5,
+  specularOpacity: 1,
+  blur: 0.5,
+  objectWidth: 200,
+  objectHeight: 140,
+  radius: 70,
+  maximumDisplacement: 0,
+  isDragging: false,
+  dragOffset: {
+    x: 0,
+    y: 0,
+  },
+  velocityX: 0,
+  velocityY: 0,
+  lastX: 0,
+  lastY: 0,
+  lastTime: 0,
+};
+
+// Animation springs
+const springs = {
+  scale: new Spring(0.85, 400, 25),
+  scaleX: new Spring(1, 400, 30),
+  scaleY: new Spring(1, 400, 30),
+  shadowOffsetX: new Spring(0, 400, 30),
+  shadowOffsetY: new Spring(4, 400, 30),
+  shadowBlur: new Spring(12, 400, 30),
+  shadowAlpha: new Spring(0.15, 300, 25),
+  refractionBoost: new Spring(0.8, 300, 18),
+};
+
+let animationFrameId = null;
+
+// DOM elements
+const glassElement = document.getElementById("glassElement");
+const glassInner = document.getElementById("glassInner");
+const demoArea = document.getElementById("demoArea");
+const demoContent = document.getElementById("demoContent");
+const glassFilterSvg = document.getElementById("glassFilterSvg");
+const glassContentClone = document.getElementById("glassContentClone");
+const demoContentInner = document.getElementById("demoContentInner");
+const displacementPreview = document.getElementById("displacementPreview");
+const specularPreview = document.getElementById("specularPreview");
+
+// Feature detection for backdrop-filter with SVG
+let useBackdropFilter = false;
+let backdropFilterSupported = false;
+
+function detectBackdropFilterSupport() {
+  // Check if browser supports backdrop-filter with SVG url()
+  // This is currently only Chrome/Chromium
+  const isChromium = !!window.chrome;
+  const testEl = document.createElement("div");
+  testEl.style.backdropFilter = "url(#test)";
+  const supportsBackdropFilterUrl = testEl.style.backdropFilter.includes("url");
+
+  backdropFilterSupported = isChromium && supportsBackdropFilterUrl;
+  useBackdropFilter = backdropFilterSupported;
+
+  // Update UI
+  updateModeUI();
+
+  if (useBackdropFilter) {
+    glassElement.classList.add("use-backdrop-filter");
+    console.log("Using native backdrop-filter (better performance)");
+  } else {
+    console.log("Using cloned content fallback (cross-browser)");
+  }
+}
+
+function updateModeUI() {
+  const modeToggle = document.getElementById("modeToggle");
+  const modeValue = document.getElementById("modeValue");
+  const modeUnsupported = document.getElementById("modeUnsupported");
+  const browserNotice = document.getElementById("browserNotice");
+  const noticeIcon = document.getElementById("noticeIcon");
+  const noticeText = document.getElementById("noticeText");
+
+  if (useBackdropFilter) {
+    modeToggle.classList.add("active");
+    modeValue.textContent = "Backdrop-filter";
+  } else {
+    modeToggle.classList.remove("active");
+    modeValue.textContent = "Clone (Fallback)";
+  }
+
+  // Show warning if backdrop-filter not supported but toggle is on
+  if (!backdropFilterSupported) {
+    modeUnsupported.style.display = useBackdropFilter ? "inline" : "none";
+  }
+
+  // Show/hide mode notice for clone mode
+  const modeNoticeRow = document.getElementById("modeNoticeRow");
+  if (modeNoticeRow) {
+    modeNoticeRow.style.display = useBackdropFilter ? "none" : "flex";
+  }
+
+  // Update browser notice dynamically
+  if (useBackdropFilter) {
+    if (backdropFilterSupported) {
+      noticeIcon.textContent = "⚡";
+      noticeText.innerHTML =
+        "<strong>Using native backdrop-filter:</strong> " +
+        "Your browser supports <code>backdrop-filter</code> with SVG filters. " +
+        "This provides the best performance via GPU compositing.";
+      browserNotice.style.background =
+        "linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(56, 161, 105, 0.1))";
+      browserNotice.style.borderColor = "rgba(72, 187, 120, 0.3)";
+    } else {
+      noticeIcon.textContent = "⚠️";
+      noticeText.innerHTML =
+        "<strong>Backdrop-filter not supported:</strong> " +
+        "Your browser doesn't support <code>backdrop-filter</code> with SVG filters. " +
+        "The effect won't render correctly. Switch to Clone mode for proper display.";
+      browserNotice.style.background =
+        "linear-gradient(135deg, rgba(245, 101, 101, 0.1), rgba(229, 62, 62, 0.1))";
+      browserNotice.style.borderColor = "rgba(245, 101, 101, 0.3)";
+    }
+  } else {
+    noticeIcon.textContent = "✨";
+    noticeText.innerHTML =
+      "<strong>Cross-browser compatible:</strong> " +
+      "This demo uses SVG filters with the regular <code>filter</code> property " +
+      "instead of <code>backdrop-filter</code>, making it work in Firefox and Chrome. (Pardon me, Safari is broken for whatever reasons)";
+    browserNotice.style.background =
+      "linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))";
+    browserNotice.style.borderColor = "rgba(102, 126, 234, 0.3)";
+  }
+}
+
+function toggleRenderMode() {
+  useBackdropFilter = !useBackdropFilter;
+
+  if (useBackdropFilter) {
+    glassElement.classList.add("use-backdrop-filter");
+    // Clear the clone filter when using backdrop
+    glassContentClone.style.filter = "none";
+  } else {
+    glassElement.classList.remove("use-backdrop-filter");
+    // Re-apply filter to clone
+    glassContentClone.style.filter = "url(#liquidGlassFilter)";
+    updateContentClonePosition(true);
+  }
+
+  updateModeUI();
+  console.log(
+    useBackdropFilter
+      ? "Switched to backdrop-filter mode"
+      : "Switched to clone fallback mode",
+  );
+}
+
+// Cached dimensions to avoid repeated getBoundingClientRect calls
+let cachedAreaRect = null;
+let lastAreaRectUpdate = 0;
+const RECT_CACHE_DURATION = 100; // ms
+
+function getAreaRect() {
+  const now = performance.now();
+  if (!cachedAreaRect || now - lastAreaRectUpdate > RECT_CACHE_DURATION) {
+    cachedAreaRect = demoArea.getBoundingClientRect();
+    lastAreaRectUpdate = now;
+  }
+  return cachedAreaRect;
+}
+
+// Throttle for position updates
+let lastPositionUpdate = 0;
+const POSITION_UPDATE_THROTTLE = 16; // ~60fps
+let pendingPositionUpdate = false;
+
+// Update the position of the cloned content inside the glass
+function updateContentClonePosition(force = false) {
+  // Skip if using backdrop-filter
+  if (useBackdropFilter) return;
+
+  const now = performance.now();
+  if (!force && now - lastPositionUpdate < POSITION_UPDATE_THROTTLE) {
+    // Schedule update for next frame if not already pending
+    if (!pendingPositionUpdate) {
+      pendingPositionUpdate = true;
+      requestAnimationFrame(() => {
+        pendingPositionUpdate = false;
+        updateContentClonePosition(true);
+      });
+    }
+    return;
+  }
+  lastPositionUpdate = now;
+
+  const areaRect = getAreaRect();
+  const glassLeft = parseFloat(glassElement.style.left) || 0;
+  const glassTop = parseFloat(glassElement.style.top) || 0;
+
+  // Use transform instead of left/top for better performance
+  demoContentInner.style.width = areaRect.width + "px";
+  demoContentInner.style.height = areaRect.height + "px";
+  demoContentInner.style.transform = `translate(${-glassLeft}px, ${-glassTop}px)`;
+
+  // Apply the SVG filter to the cloned content (only once)
+  if (!glassContentClone.style.filter) {
+    glassContentClone.style.filter = "url(#liquidGlassFilter)";
+  }
+}
+
+// Invalidate rect cache on resize
+window.addEventListener("resize", () => {
+  cachedAreaRect = null;
+  updateContentClonePosition(true);
+});
+
+// Calculate displacement along a single radius using Snell's Law
+function calculateDisplacementMap1D(
+  glassThickness,
+  bezelWidth,
+  surfaceFn,
+  refractiveIndex,
+  samples = 128,
+) {
+  const eta = 1 / refractiveIndex;
+
+  function refract(normalX, normalY) {
+    const dot = normalY;
+    const k = 1 - eta * eta * (1 - dot * dot);
+    if (k < 0) return null;
+    const kSqrt = Math.sqrt(k);
+    return [
+      -(eta * dot + kSqrt) * normalX,
+      eta - (eta * dot + kSqrt) * normalY,
+    ];
+  }
+
+  const result = [];
+  for (let i = 0; i < samples; i++) {
+    const x = i / samples;
+    const y = surfaceFn(x);
+    const dx = x < 1 ? 0.0001 : -0.0001;
+    const y2 = surfaceFn(Math.max(0, Math.min(1, x + dx)));
+    const derivative = (y2 - y) / dx;
+    const magnitude = Math.sqrt(derivative * derivative + 1);
+    const normal = [-derivative / magnitude, -1 / magnitude];
+    const refracted = refract(normal[0], normal[1]);
+
+    if (!refracted) {
+      result.push(0);
+    } else {
+      const remainingHeightOnBezel = y * bezelWidth;
+      const remainingHeight = remainingHeightOnBezel + glassThickness;
+      result.push(refracted[0] * (remainingHeight / refracted[1]));
+    }
+  }
+  return result;
+}
+
+// Calculate 2D displacement map
+function calculateDisplacementMap2D(
+  canvasWidth,
+  canvasHeight,
+  objectWidth,
+  objectHeight,
+  radius,
+  bezelWidth,
+  maximumDisplacement,
+  precomputedMap,
+) {
+  const imageData = new ImageData(canvasWidth, canvasHeight);
+
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    imageData.data[i] = 128;
+    imageData.data[i + 1] = 128;
+    imageData.data[i + 2] = 0;
+    imageData.data[i + 3] = 255;
+  }
+
+  const radiusSquared = radius * radius;
+  const radiusPlusOneSquared = (radius + 1) * (radius + 1);
+  const radiusMinusBezelSquared = Math.max(
+    0,
+    (radius - bezelWidth) * (radius - bezelWidth),
+  );
+  const widthBetweenRadiuses = objectWidth - radius * 2;
+  const heightBetweenRadiuses = objectHeight - radius * 2;
+  const objectX = (canvasWidth - objectWidth) / 2;
+  const objectY = (canvasHeight - objectHeight) / 2;
+
+  for (let y1 = 0; y1 < objectHeight; y1++) {
+    for (let x1 = 0; x1 < objectWidth; x1++) {
+      const idx = ((objectY + y1) * canvasWidth + objectX + x1) * 4;
+      const isOnLeftSide = x1 < radius;
+      const isOnRightSide = x1 >= objectWidth - radius;
+      const isOnTopSide = y1 < radius;
+      const isOnBottomSide = y1 >= objectHeight - radius;
+
+      const x = isOnLeftSide
+        ? x1 - radius
+        : isOnRightSide
+          ? x1 - radius - widthBetweenRadiuses
+          : 0;
+      const y = isOnTopSide
+        ? y1 - radius
+        : isOnBottomSide
+          ? y1 - radius - heightBetweenRadiuses
+          : 0;
+
+      const distanceToCenterSquared = x * x + y * y;
+      const isInBezel =
+        distanceToCenterSquared <= radiusPlusOneSquared &&
+        distanceToCenterSquared >= radiusMinusBezelSquared;
+
+      if (isInBezel) {
+        const opacity =
+          distanceToCenterSquared < radiusSquared
+            ? 1
+            : 1 -
+            (Math.sqrt(distanceToCenterSquared) - Math.sqrt(radiusSquared)) /
+            (Math.sqrt(radiusPlusOneSquared) - Math.sqrt(radiusSquared));
+        const distanceFromCenter = Math.sqrt(distanceToCenterSquared);
+        const distanceFromSide = radius - distanceFromCenter;
+        const cos = distanceFromCenter > 0 ? x / distanceFromCenter : 0;
+        const sin = distanceFromCenter > 0 ? y / distanceFromCenter : 0;
+        const bezelRatio = Math.max(
+          0,
+          Math.min(1, distanceFromSide / bezelWidth),
+        );
+        const bezelIndex = Math.floor(bezelRatio * precomputedMap.length);
+        const distance =
+          precomputedMap[
+          Math.max(0, Math.min(bezelIndex, precomputedMap.length - 1))
+          ] || 0;
+        const dX =
+          maximumDisplacement > 0 ? (-cos * distance) / maximumDisplacement : 0;
+        const dY =
+          maximumDisplacement > 0 ? (-sin * distance) / maximumDisplacement : 0;
+
+        imageData.data[idx] = Math.max(
+          0,
+          Math.min(255, 128 + dX * 127 * opacity),
+        );
+        imageData.data[idx + 1] = Math.max(
+          0,
+          Math.min(255, 128 + dY * 127 * opacity),
+        );
+        imageData.data[idx + 2] = 0;
+        imageData.data[idx + 3] = 255;
+      }
+    }
+  }
+  return imageData;
+}
+
+// Calculate specular highlight
+function calculateSpecularHighlight(
+  objectWidth,
+  objectHeight,
+  radius,
+  bezelWidth,
+  specularAngle = Math.PI / 3,
+) {
+  const imageData = new ImageData(objectWidth, objectHeight);
+  const specularVector = [Math.cos(specularAngle), Math.sin(specularAngle)];
+  const specularThickness = 1.5;
+  const radiusSquared = radius * radius;
+  const radiusPlusOneSquared = (radius + 1) * (radius + 1);
+  const radiusMinusSpecularSquared = Math.max(
+    0,
+    (radius - specularThickness) * (radius - specularThickness),
+  );
+  const widthBetweenRadiuses = objectWidth - radius * 2;
+  const heightBetweenRadiuses = objectHeight - radius * 2;
+
+  for (let y1 = 0; y1 < objectHeight; y1++) {
+    for (let x1 = 0; x1 < objectWidth; x1++) {
+      const idx = (y1 * objectWidth + x1) * 4;
+      const isOnLeftSide = x1 < radius;
+      const isOnRightSide = x1 >= objectWidth - radius;
+      const isOnTopSide = y1 < radius;
+      const isOnBottomSide = y1 >= objectHeight - radius;
+
+      const x = isOnLeftSide
+        ? x1 - radius
+        : isOnRightSide
+          ? x1 - radius - widthBetweenRadiuses
+          : 0;
+      const y = isOnTopSide
+        ? y1 - radius
+        : isOnBottomSide
+          ? y1 - radius - heightBetweenRadiuses
+          : 0;
+
+      const distanceToCenterSquared = x * x + y * y;
+      const isNearEdge =
+        distanceToCenterSquared <= radiusPlusOneSquared &&
+        distanceToCenterSquared >= radiusMinusSpecularSquared;
+
+      if (isNearEdge) {
+        const distanceFromCenter = Math.sqrt(distanceToCenterSquared);
+        const distanceFromSide = radius - distanceFromCenter;
+        const opacity =
+          distanceToCenterSquared < radiusSquared
+            ? 1
+            : 1 -
+            (distanceFromCenter - Math.sqrt(radiusSquared)) /
+            (Math.sqrt(radiusPlusOneSquared) - Math.sqrt(radiusSquared));
+        const cos = distanceFromCenter > 0 ? x / distanceFromCenter : 0;
+        const sin = distanceFromCenter > 0 ? -y / distanceFromCenter : 0;
+        const dotProduct = Math.abs(
+          cos * specularVector[0] + sin * specularVector[1],
+        );
+        const edgeRatio = Math.max(
+          0,
+          Math.min(1, distanceFromSide / specularThickness),
+        );
+        const sharpFalloff = Math.sqrt(1 - (1 - edgeRatio) * (1 - edgeRatio));
+        const coefficient = dotProduct * sharpFalloff;
+        const color = Math.min(255, 255 * coefficient);
+        const finalOpacity = Math.min(255, color * coefficient * opacity);
+
+        imageData.data[idx] = color;
+        imageData.data[idx + 1] = color;
+        imageData.data[idx + 2] = color;
+        imageData.data[idx + 3] = finalOpacity;
+      }
+    }
+  }
+  return imageData;
+}
+
+// Convert ImageData to data URL
+function imageDataToDataURL(imageData) {
+  const canvas = document.createElement("canvas");
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+  const ctx = canvas.getContext("2d");
+  ctx.putImageData(imageData, 0, 0);
+  return canvas.toDataURL();
+}
+
+// Update filter and previews
+function updateFilter(updateScale = true) {
+  const surfaceFn = SurfaceEquations[state.surfaceType];
+  const precomputed = calculateDisplacementMap1D(
+    state.glassThickness,
+    state.bezelWidth,
+    surfaceFn,
+    state.refractiveIndex,
+  );
+  state.maximumDisplacement = Math.max(...precomputed.map(Math.abs));
+
+  const displacementData = calculateDisplacementMap2D(
+    state.objectWidth,
+    state.objectHeight,
+    state.objectWidth,
+    state.objectHeight,
+    state.radius,
+    state.bezelWidth,
+    state.maximumDisplacement || 1,
+    precomputed,
+  );
+  const specularData = calculateSpecularHighlight(
+    state.objectWidth,
+    state.objectHeight,
+    state.radius,
+    state.bezelWidth,
+  );
+
+  const displacementUrl = imageDataToDataURL(displacementData);
+  const specularUrl = imageDataToDataURL(specularData);
+
+  document
+    .getElementById("displacementImage")
+    .setAttribute("href", displacementUrl);
+  document.getElementById("specularImage").setAttribute("href", specularUrl);
+
+  if (updateScale) {
+    document
+      .getElementById("displacementMap")
+      .setAttribute("scale", state.maximumDisplacement * state.refractionScale);
+  }
+
+  document
+    .getElementById("specularAlpha")
+    .setAttribute("slope", state.specularOpacity);
+  document
+    .getElementById("filterBlur")
+    .setAttribute("stdDeviation", state.blur);
+
+  // Update preview canvases
+  const displacementCtx = displacementPreview.getContext("2d");
+  displacementCtx.putImageData(displacementData, 0, 0);
+
+  const specularCtx = specularPreview.getContext("2d");
+  specularCtx.putImageData(specularData, 0, 0);
+
+  // Update clone position after filter update
+  updateContentClonePosition();
+}
+
+// Animation loop for spring physics
+function animationLoop(timestamp) {
+  const dt = Math.min(0.032, 1 / 60);
+
+  if (state.isDragging) {
+    springs.scale.setTarget(1.0);
+    springs.shadowOffsetX.setTarget(4);
+    springs.shadowOffsetY.setTarget(16);
+    springs.shadowBlur.setTarget(24);
+    springs.shadowAlpha.setTarget(0.22);
+    springs.refractionBoost.setTarget(1.0);
+  } else {
+    springs.scale.setTarget(0.85);
+    springs.shadowOffsetX.setTarget(0);
+    springs.shadowOffsetY.setTarget(4);
+    springs.shadowBlur.setTarget(12);
+    springs.shadowAlpha.setTarget(0.15);
+    springs.refractionBoost.setTarget(0.8);
+  }
+
+  const velocityMagnitude = Math.sqrt(
+    state.velocityX ** 2 + state.velocityY ** 2,
+  );
+  const squishAmount = Math.min(0.15, velocityMagnitude / 3000);
+
+  if (velocityMagnitude > 50) {
+    const vxNorm = state.velocityX / velocityMagnitude;
+    const vyNorm = state.velocityY / velocityMagnitude;
+    springs.scaleX.setTarget(
+      1 +
+      squishAmount * Math.abs(vxNorm) -
+      squishAmount * 0.5 * Math.abs(vyNorm),
+    );
+    springs.scaleY.setTarget(
+      1 +
+      squishAmount * Math.abs(vyNorm) -
+      squishAmount * 0.5 * Math.abs(vxNorm),
+    );
+  } else {
+    springs.scaleX.setTarget(1);
+    springs.scaleY.setTarget(1);
+  }
+
+  const scale = springs.scale.update(dt);
+  const scaleX = springs.scaleX.update(dt);
+  const scaleY = springs.scaleY.update(dt);
+  const shadowOffsetX = springs.shadowOffsetX.update(dt);
+  const shadowOffsetY = springs.shadowOffsetY.update(dt);
+  const shadowBlur = springs.shadowBlur.update(dt);
+  const shadowAlpha = springs.shadowAlpha.update(dt);
+  const refractionBoost = springs.refractionBoost.update(dt);
+
+  glassElement.style.transform = `scale(${scale * scaleX}, ${scale * scaleY})`;
+
+  const insetAlpha = shadowAlpha * 0.6;
+  glassInner.style.boxShadow = `
+                    ${shadowOffsetX}px ${shadowOffsetY}px ${shadowBlur}px rgba(0, 0, 0, ${shadowAlpha}),
+                    inset ${shadowOffsetX * 0.3}px ${shadowOffsetY * 0.4}px 16px rgba(0, 0, 0, ${insetAlpha}),
+                    inset ${-shadowOffsetX * 0.3}px ${-shadowOffsetY * 0.4}px 16px rgba(255, 255, 255, ${insetAlpha * 0.8})
+                `;
+
+  const dynamicRefractionScale = state.refractionScale * refractionBoost;
+  document
+    .getElementById("displacementMap")
+    .setAttribute("scale", state.maximumDisplacement * dynamicRefractionScale);
+
+  if (!state.isDragging) {
+    state.velocityX *= 0.95;
+    state.velocityY *= 0.95;
+  }
+
+  const allSettled =
+    Object.values(springs).every((s) => s.isSettled()) &&
+    Math.abs(state.velocityX) < 1 &&
+    Math.abs(state.velocityY) < 1;
+
+  if (!allSettled) {
+    animationFrameId = requestAnimationFrame(animationLoop);
+  } else {
+    animationFrameId = null;
+  }
+}
+
+function startAnimationLoop() {
+  if (!animationFrameId) {
+    animationFrameId = requestAnimationFrame(animationLoop);
+  }
+}
+
+// Dragging functionality
+function initDragging() {
+  glassElement.addEventListener("mousedown", startDrag);
+  glassElement.addEventListener("touchstart", startDrag, {
+    passive: false,
+  });
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("touchmove", drag, {
+    passive: false,
+  });
+  document.addEventListener("mouseup", endDrag);
+  document.addEventListener("touchend", endDrag);
+}
+
+function startDrag(e) {
+  e.preventDefault();
+  state.isDragging = true;
+
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const rect = glassElement.getBoundingClientRect();
+
+  const currentScale = springs.scale.value;
+  const scaledWidth = state.objectWidth * currentScale;
+  const scaledHeight = state.objectHeight * currentScale;
+  const offsetFromScale = {
+    x: (state.objectWidth - scaledWidth) / 2,
+    y: (state.objectHeight - scaledHeight) / 2,
+  };
+
+  state.dragOffset.x = (clientX - rect.left) / currentScale;
+  state.dragOffset.y = (clientY - rect.top) / currentScale;
+
+  state.lastX = clientX;
+  state.lastY = clientY;
+  state.lastTime = performance.now();
+  state.velocityX = 0;
+  state.velocityY = 0;
+
+  startAnimationLoop();
+}
+
+function drag(e) {
+  if (!state.isDragging) return;
+  e.preventDefault();
+
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const areaRect = demoArea.getBoundingClientRect();
+
+  const now = performance.now();
+  const dt = Math.max(1, now - state.lastTime) / 1000;
+  state.velocityX = (clientX - state.lastX) / dt;
+  state.velocityY = (clientY - state.lastY) / dt;
+  state.lastX = clientX;
+  state.lastY = clientY;
+  state.lastTime = now;
+
+  let newX = clientX - areaRect.left - state.dragOffset.x;
+  let newY = clientY - areaRect.top - state.dragOffset.y;
+
+  const maxX = areaRect.width - state.objectWidth;
+  const maxY = areaRect.height - state.objectHeight;
+
+  if (newX < 0) {
+    newX = newX * 0.3;
+  } else if (newX > maxX) {
+    newX = maxX + (newX - maxX) * 0.3;
+  }
+
+  if (newY < 0) {
+    newY = newY * 0.3;
+  } else if (newY > maxY) {
+    newY = maxY + (newY - maxY) * 0.3;
+  }
+
+  glassElement.style.left = newX + "px";
+  glassElement.style.top = newY + "px";
+
+  updateContentClonePosition();
+}
+
+function endDrag() {
+  if (!state.isDragging) return;
+  state.isDragging = false;
+
+  const areaRect = demoArea.getBoundingClientRect();
+  let currentX = parseFloat(glassElement.style.left) || 0;
+  let currentY = parseFloat(glassElement.style.top) || 0;
+
+  const maxX = areaRect.width - state.objectWidth;
+  const maxY = areaRect.height - state.objectHeight;
+
+  currentX = Math.max(0, Math.min(currentX, maxX));
+  currentY = Math.max(0, Math.min(currentY, maxY));
+
+  glassElement.style.left = currentX + "px";
+  glassElement.style.top = currentY + "px";
+
+  updateContentClonePosition();
+  startAnimationLoop();
+}
+
+// Initialize controls
+function initControls() {
+  document.querySelectorAll(".surface-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".surface-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.surfaceType = btn.dataset.surface;
+      updateFilter();
+    });
+  });
+
+  const sliders = {
+    bezelWidth: {
+      prop: "bezelWidth",
+      format: (v) => Math.round(v),
+    },
+    glassThickness: {
+      prop: "glassThickness",
+      format: (v) => Math.round(v),
+    },
+    refractionScale: {
+      prop: "refractionScale",
+      format: (v) => v.toFixed(2),
+    },
+    specularOpacity: {
+      prop: "specularOpacity",
+      format: (v) => v.toFixed(2),
+    },
+    blur: {
+      prop: "blur",
+      format: (v) => v.toFixed(1),
+    },
+  };
+
+  Object.entries(sliders).forEach(([id, config]) => {
+    const slider = document.getElementById(id);
+    const valueDisplay = document.getElementById(id + "Value");
+
+    slider.addEventListener("input", () => {
+      const value = parseFloat(slider.value);
+      state[config.prop] = value;
+      valueDisplay.textContent = config.format(value);
+      updateFilter();
+    });
+  });
+}
+
+// Initialize
+function init() {
+  detectBackdropFilterSupport();
+  initDragging();
+  initControls();
+  updateFilter(false);
+  updateContentClonePosition(true);
+
+  // Set up mode toggle
+  const modeToggle = document.getElementById("modeToggle");
+  modeToggle.addEventListener("click", toggleRenderMode);
+
+  springs.scale.value = 0.85;
+  springs.scale.target = 0.85;
+  startAnimationLoop();
+}
+
+// ===== SLIDER DEMO =====
+const sliderConfig = {
+  thumbWidth: 90,
+  thumbHeight: 60,
+  thumbRadius: 30,
+  trackWidth: 330,
+  trackHeight: 14,
+  bezelWidth: 16,
+  glassThickness: 80,
+  refractiveIndex: 1.45,
+  SCALE_REST: 0.6,
+  SCALE_DRAG: 1,
+};
+
+const sliderState = {
+  value: 10,
+  pointerDown: false,
+  forceActive: false,
+  specularOpacity: 0.4,
+  specularSaturation: 7,
+  refractionBase: 1,
+  blur: 0,
+  maximumDisplacement: 0,
+};
+
+const sliderSprings = {
+  scale: new Spring(sliderConfig.SCALE_REST, 2000, 80),
+  backgroundOpacity: new Spring(1, 2000, 80),
+  scaleRatio: new Spring(0.4, 100, 10), // motion default: stiffness=100, damping=10
+};
+
+let sliderAnimationFrameId = null;
+
+function getSliderActive() {
+  return sliderState.forceActive || sliderState.pointerDown;
+}
+
+function updateSliderFilter() {
+  const surfaceFn = SurfaceEquations.convex_squircle;
+  const precomputed = calculateDisplacementMap1D(
+    sliderConfig.glassThickness,
+    sliderConfig.bezelWidth,
+    surfaceFn,
+    sliderConfig.refractiveIndex,
+  );
+  sliderState.maximumDisplacement = Math.max(...precomputed.map(Math.abs));
+
+  const displacementData = calculateDisplacementMap2D(
+    sliderConfig.thumbWidth,
+    sliderConfig.thumbHeight,
+    sliderConfig.thumbWidth,
+    sliderConfig.thumbHeight,
+    sliderConfig.thumbRadius,
+    sliderConfig.bezelWidth,
+    sliderState.maximumDisplacement || 1,
+    precomputed,
+  );
+
+  const specularData = calculateSpecularHighlight(
+    sliderConfig.thumbWidth,
+    sliderConfig.thumbHeight,
+    sliderConfig.thumbRadius,
+    sliderConfig.bezelWidth,
+  );
+
+  const displacementUrl = imageDataToDataURL(displacementData);
+  const specularUrl = imageDataToDataURL(specularData);
+
+  document
+    .getElementById("sliderDisplacementImage")
+    .setAttribute("href", displacementUrl);
+  document
+    .getElementById("sliderSpecularImage")
+    .setAttribute("href", specularUrl);
+  document
+    .getElementById("sliderSpecularAlpha")
+    .setAttribute("slope", sliderState.specularOpacity);
+  document
+    .getElementById("sliderFilterBlur")
+    .setAttribute("stdDeviation", sliderState.blur);
+
+  document
+    .getElementById("sliderSaturation")
+    .setAttribute("values", sliderState.specularSaturation);
+}
+
+function sliderAnimationLoop() {
+  const dt = Math.min(0.032, 1 / 60);
+  const isActive = getSliderActive();
+
+  // Update spring targets
+  sliderSprings.scale.setTarget(
+    isActive ? sliderConfig.SCALE_DRAG : sliderConfig.SCALE_REST,
+  );
+  sliderSprings.backgroundOpacity.setTarget(isActive ? 0.1 : 1);
+  const pressMultiplier = isActive ? 0.9 : 0.4;
+  sliderSprings.scaleRatio.setTarget(
+    pressMultiplier * sliderState.refractionBase,
+  );
+
+  const scale = sliderSprings.scale.update(dt);
+  const backgroundOpacity = sliderSprings.backgroundOpacity.update(dt);
+  const scaleRatio = sliderSprings.scaleRatio.update(dt);
+
+  const sliderThumb = document.getElementById("sliderThumb");
+  const sliderThumbClone = document.getElementById("sliderThumbClone");
+
+  sliderThumb.style.transform = `scale(${scale})`;
+  sliderThumb.style.backgroundColor = `rgba(255, 255, 255, ${backgroundOpacity})`;
+
+  // Hide clone when background is opaque (not active), show when translucent (active)
+  // Clone opacity is inverse of background opacity
+  const cloneOpacity = 1 - backgroundOpacity;
+  sliderThumbClone.style.opacity = cloneOpacity;
+
+  // Update displacement scale
+  const dynamicScale = sliderState.maximumDisplacement * scaleRatio;
+  document
+    .getElementById("sliderDisplacementMap")
+    .setAttribute("scale", dynamicScale);
+
+  const allSettled = Object.values(sliderSprings).every((s) => s.isSettled());
+  if (!allSettled) {
+    sliderAnimationFrameId = requestAnimationFrame(sliderAnimationLoop);
+  } else {
+    sliderAnimationFrameId = null;
+  }
+}
+
+function startSliderAnimation() {
+  if (!sliderAnimationFrameId) {
+    sliderAnimationFrameId = requestAnimationFrame(sliderAnimationLoop);
+  }
+}
+
+function initSliderDemo() {
+  const sliderThumb = document.getElementById("sliderThumb");
+  const sliderTrack = document.getElementById("sliderTrack");
+  const sliderFill = document.getElementById("sliderFill");
+  const sliderThumbClone = document.getElementById("sliderThumbClone");
+  const sliderForceActive = document.getElementById("sliderForceActive");
+  const sliderThumbCloneInner = document.getElementById(
+    "sliderThumbCloneInner",
+  );
+
+  updateSliderFilter();
+  sliderThumbClone.style.filter = "url(#sliderGlassFilter)";
+
+  const thumbWidthRest = sliderConfig.thumbWidth * sliderConfig.SCALE_REST;
+
+  function updateSliderUI() {
+    sliderFill.style.width = sliderState.value + "%";
+
+    // Update thumb x position based on value
+    const ratio = sliderState.value / 100;
+    const x0 = thumbWidthRest / 2;
+    const x100 = sliderConfig.trackWidth - thumbWidthRest / 2;
+    const thumbCenterX = x0 + ratio * (x100 - x0);
+    const thumbX = thumbCenterX - sliderConfig.thumbWidth / 2;
+    sliderThumb.style.left = thumbX + "px";
+
+    // Update clone position
+    const sliderDemoArea = document.getElementById("sliderDemoArea");
+    const areaRect = sliderDemoArea.getBoundingClientRect();
+    const containerLeft = (areaRect.width - sliderConfig.trackWidth) / 2;
+    const containerTop = (areaRect.height - sliderConfig.thumbHeight) / 2;
+    const trackTop = (sliderConfig.thumbHeight - sliderConfig.trackHeight) / 2;
+
+    sliderThumbCloneInner.style.width = areaRect.width + "px";
+    sliderThumbCloneInner.style.height = areaRect.height + "px";
+    sliderThumbCloneInner.style.transform = `translate(${-(containerLeft + thumbX)}px, ${-containerTop}px)`;
+
+    // Position pseudo-elements for track/fill inside clone
+    sliderThumbCloneInner.style.setProperty(
+      "--track-left",
+      `${containerLeft}px`,
+    );
+    sliderThumbCloneInner.style.setProperty(
+      "--track-top",
+      `${containerTop + trackTop}px`,
+    );
+    sliderThumbCloneInner.style.setProperty(
+      "--fill-width",
+      sliderState.value.toString(),
+    );
+  }
+
+  function onPointerDown(e) {
+    e.preventDefault();
+    sliderState.pointerDown = true;
+    startSliderAnimation();
+  }
+
+  function onPointerMove(e) {
+    if (!sliderState.pointerDown) return;
+    e.preventDefault();
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const trackRect = sliderTrack.getBoundingClientRect();
+
+    const x0 = trackRect.left + thumbWidthRest / 2;
+    const x100 = trackRect.right - thumbWidthRest / 2;
+    const trackInsideWidth = x100 - x0;
+
+    const x = Math.max(x0, Math.min(x100, clientX));
+    const ratio = (x - x0) / trackInsideWidth;
+    sliderState.value = Math.max(0, Math.min(100, ratio * 100));
+
+    updateSliderUI();
+  }
+
+  function onPointerUp() {
+    sliderState.pointerDown = false;
+    startSliderAnimation();
+  }
+
+  sliderThumb.addEventListener("mousedown", onPointerDown);
+  sliderThumb.addEventListener("touchstart", onPointerDown, { passive: false });
+  sliderTrack.addEventListener("mousedown", (e) => {
+    onPointerDown(e);
+    onPointerMove(e);
+  });
+
+  window.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("touchmove", onPointerMove, { passive: false });
+  window.addEventListener("mouseup", onPointerUp);
+  window.addEventListener("touchend", onPointerUp);
+
+  sliderForceActive.addEventListener("change", (e) => {
+    sliderState.forceActive = e.target.checked;
+    startSliderAnimation();
+  });
+
+  // Setup controls
+  const sliderControls = {
+    sliderSpecularOpacity: {
+      prop: "specularOpacity",
+      format: (v) => v.toFixed(2),
+      update: () =>
+        document
+          .getElementById("sliderSpecularAlpha")
+          .setAttribute("slope", sliderState.specularOpacity),
+    },
+    sliderSpecularSaturation: {
+      prop: "specularSaturation",
+      format: (v) => Math.round(v).toString(),
+      update: () =>
+        document
+          .getElementById("sliderSaturation")
+          .setAttribute("values", sliderState.specularSaturation),
+    },
+    sliderRefraction: {
+      prop: "refractionBase",
+      format: (v) => v.toFixed(2),
+      update: () => startSliderAnimation(),
+    },
+    sliderBlur: {
+      prop: "blur",
+      format: (v) => v.toFixed(1),
+      update: () =>
+        document
+          .getElementById("sliderFilterBlur")
+          .setAttribute("stdDeviation", sliderState.blur),
+    },
+  };
+
+  Object.entries(sliderControls).forEach(([id, config]) => {
+    const slider = document.getElementById(id);
+    const valueDisplay = document.getElementById(id + "Value");
+    slider.addEventListener("input", () => {
+      const value = parseFloat(slider.value);
+      sliderState[config.prop] = value;
+      valueDisplay.textContent = config.format(value);
+      config.update();
+    });
+  });
+
+  // Initial render
+  updateSliderUI();
+  window.addEventListener("resize", updateSliderUI);
+  startSliderAnimation();
+}
+
+// ===== SWITCH DEMO =====
+const switchConfig = {
+  trackWidth: 160,
+  trackHeight: 67,
+  thumbWidth: 146,
+  thumbHeight: 92,
+  thumbRadius: 46,
+  bezelWidth: 19,
+  glassThickness: 47,
+  refractiveIndex: 1.5,
+  THUMB_REST_SCALE: 0.65,
+  THUMB_ACTIVE_SCALE: 0.9,
+};
+
+// Calculate travel distance
+switchConfig.THUMB_REST_OFFSET =
+  ((1 - switchConfig.THUMB_REST_SCALE) * switchConfig.thumbWidth) / 2;
+switchConfig.TRAVEL =
+  switchConfig.trackWidth -
+  switchConfig.trackHeight -
+  (switchConfig.thumbWidth - switchConfig.thumbHeight) *
+  switchConfig.THUMB_REST_SCALE;
+
+const switchState = {
+  checked: true,
+  pointerDown: false,
+  forceActive: false,
+  initialPointerX: 0,
+  xDragRatio: 1,
+  specularOpacity: 0.5,
+  specularSaturation: 6,
+  refractionBase: 1,
+  blur: 0.2,
+  maximumDisplacement: 0,
+};
+
+const switchSprings = {
+  xRatio: new Spring(1, 1000, 80),
+  scale: new Spring(switchConfig.THUMB_REST_SCALE, 2000, 80),
+  backgroundOpacity: new Spring(1, 2000, 80),
+  trackColor: new Spring(1, 1000, 80),
+  scaleRatio: new Spring(0.4, 100, 10), // motion default: stiffness=100, damping=10
+};
+
+let switchAnimationFrameId = null;
+
+function getSwitchActive() {
+  return switchState.forceActive || switchState.pointerDown;
+}
+
+function updateSwitchFilter() {
+  const surfaceFn = SurfaceEquations.convex_squircle;
+  const precomputed = calculateDisplacementMap1D(
+    switchConfig.glassThickness,
+    switchConfig.bezelWidth,
+    surfaceFn,
+    switchConfig.refractiveIndex,
+  );
+  switchState.maximumDisplacement = Math.max(...precomputed.map(Math.abs));
+
+  const displacementData = calculateDisplacementMap2D(
+    switchConfig.thumbWidth,
+    switchConfig.thumbHeight,
+    switchConfig.thumbWidth,
+    switchConfig.thumbHeight,
+    switchConfig.thumbRadius,
+    switchConfig.bezelWidth,
+    switchState.maximumDisplacement || 1,
+    precomputed,
+  );
+
+  const specularData = calculateSpecularHighlight(
+    switchConfig.thumbWidth,
+    switchConfig.thumbHeight,
+    switchConfig.thumbRadius,
+    switchConfig.bezelWidth,
+  );
+
+  const displacementUrl = imageDataToDataURL(displacementData);
+  const specularUrl = imageDataToDataURL(specularData);
+
+  document
+    .getElementById("switchDisplacementImage")
+    .setAttribute("href", displacementUrl);
+  document
+    .getElementById("switchSpecularImage")
+    .setAttribute("href", specularUrl);
+  document
+    .getElementById("switchSpecularAlpha")
+    .setAttribute("slope", switchState.specularOpacity);
+  document
+    .getElementById("switchFilterBlur")
+    .setAttribute("stdDeviation", switchState.blur);
+
+  document
+    .getElementById("switchSaturation")
+    .setAttribute("values", switchState.specularSaturation);
+}
+
+function switchAnimationLoop() {
+  const dt = Math.min(0.032, 1 / 60);
+  const isActive = getSwitchActive();
+
+  // Update spring targets
+  switchSprings.scale.setTarget(
+    isActive ? switchConfig.THUMB_ACTIVE_SCALE : switchConfig.THUMB_REST_SCALE,
+  );
+  switchSprings.backgroundOpacity.setTarget(isActive ? 0.1 : 1);
+  const pressMultiplier = isActive ? 0.9 : 0.4;
+  switchSprings.scaleRatio.setTarget(
+    pressMultiplier * switchState.refractionBase,
+  );
+
+  // xRatio target depends on dragging state
+  if (!switchState.pointerDown) {
+    switchSprings.xRatio.setTarget(switchState.checked ? 1 : 0);
+  }
+
+  // Track color based on position during drag or checked state when not dragging
+  const considerChecked = switchState.pointerDown
+    ? switchState.xDragRatio > 0.5
+      ? 1
+      : 0
+    : switchState.checked
+      ? 1
+      : 0;
+  switchSprings.trackColor.setTarget(considerChecked);
+
+  const xRatio = switchSprings.xRatio.update(dt);
+  const scale = switchSprings.scale.update(dt);
+  const backgroundOpacity = switchSprings.backgroundOpacity.update(dt);
+  const trackColor = switchSprings.trackColor.update(dt);
+  const scaleRatio = switchSprings.scaleRatio.update(dt);
+
+  const switchThumb = document.getElementById("switchThumb");
+  const switchTrack = document.getElementById("switchTrack");
+  const switchThumbClone = document.getElementById("switchThumbClone");
+  const switchThumbCloneInner = document.getElementById(
+    "switchThumbCloneInner",
+  );
+
+  // Hide clone when background is opaque (not active), show when translucent (active)
+  const cloneOpacity = 1 - backgroundOpacity;
+  switchThumbClone.style.opacity = cloneOpacity;
+
+  // Calculate thumb position
+  const marginLeft =
+    -switchConfig.THUMB_REST_OFFSET +
+    (switchConfig.trackHeight -
+      switchConfig.thumbHeight * switchConfig.THUMB_REST_SCALE) /
+    2;
+  const thumbX = marginLeft + xRatio * switchConfig.TRAVEL;
+
+  switchThumb.style.left = thumbX + "px";
+  switchThumb.style.transform = `translateY(-50%) scale(${scale})`;
+  switchThumb.style.backgroundColor = `rgba(255, 255, 255, ${backgroundOpacity})`;
+
+  // Box shadow with inset when pressed
+  if (switchState.pointerDown) {
+    switchThumb.style.boxShadow =
+      "0 4px 22px rgba(0,0,0,0.1), inset 2px 7px 24px rgba(0,0,0,0.09), inset -2px -7px 24px rgba(255,255,255,0.09)";
+  } else {
+    switchThumb.style.boxShadow = "0 4px 22px rgba(0,0,0,0.1)";
+  }
+
+  // Interpolate track color: #94949F77 (off) to #3BBF4EEE (on)
+  // Off: rgba(148, 148, 159, 0.47), On: rgba(59, 191, 78, 0.93)
+  const offR = 148,
+    offG = 148,
+    offB = 159,
+    offA = 0.47;
+  const onR = 59,
+    onG = 191,
+    onB = 78,
+    onA = 0.93;
+  const r = Math.round(offR + (onR - offR) * trackColor);
+  const g = Math.round(offG + (onG - offG) * trackColor);
+  const b = Math.round(offB + (onB - offB) * trackColor);
+  const a = offA + (onA - offA) * trackColor;
+  const trackBgColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+  switchTrack.style.backgroundColor = trackBgColor;
+
+  // Update clone position
+  const switchDemoArea = document.getElementById("switchDemoArea");
+  const areaRect = switchDemoArea.getBoundingClientRect();
+  const containerLeft = (areaRect.width - switchConfig.trackWidth) / 2;
+  const containerTop = (areaRect.height - switchConfig.trackHeight) / 2;
+
+  switchThumbCloneInner.style.width = areaRect.width + "px";
+  switchThumbCloneInner.style.height = areaRect.height + "px";
+  // Thumb is positioned relative to track, which is centered
+  // thumbY offset: top: sliderHeight/2, y: -50% -> centered vertically in track
+  const thumbYOffset =
+    switchConfig.trackHeight / 2 - switchConfig.thumbHeight / 2;
+  switchThumbCloneInner.style.transform = `translate(${-(containerLeft + thumbX)}px, ${-(containerTop + thumbYOffset)}px)`;
+  switchThumbCloneInner.style.setProperty("--switch-track-color", trackBgColor);
+  switchThumbCloneInner.style.setProperty("--track-left", `${containerLeft}px`);
+  switchThumbCloneInner.style.setProperty("--track-top", `${containerTop}px`);
+
+  // Update displacement scale
+  const dynamicScale = switchState.maximumDisplacement * scaleRatio;
+  document
+    .getElementById("switchDisplacementMap")
+    .setAttribute("scale", dynamicScale);
+
+  const allSettled = Object.values(switchSprings).every((s) => s.isSettled());
+  if (!allSettled) {
+    switchAnimationFrameId = requestAnimationFrame(switchAnimationLoop);
+  } else {
+    switchAnimationFrameId = null;
+  }
+}
+
+function startSwitchAnimation() {
+  if (!switchAnimationFrameId) {
+    switchAnimationFrameId = requestAnimationFrame(switchAnimationLoop);
+  }
+}
+
+function initSwitchDemo() {
+  const switchThumb = document.getElementById("switchThumb");
+  const switchTrack = document.getElementById("switchTrack");
+  const switchThumbClone = document.getElementById("switchThumbClone");
+  const switchForceActive = document.getElementById("switchForceActive");
+
+  updateSwitchFilter();
+  switchThumbClone.style.filter = "url(#switchGlassFilter)";
+
+  function onPointerDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    switchState.pointerDown = true;
+    switchState.initialPointerX = e.touches ? e.touches[0].clientX : e.clientX;
+    switchState.xDragRatio = switchState.checked ? 1 : 0;
+    startSwitchAnimation();
+  }
+
+  function onPointerMove(e) {
+    if (!switchState.pointerDown) return;
+    e.stopPropagation();
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const baseRatio = switchState.checked ? 1 : 0;
+    const displacementX = clientX - switchState.initialPointerX;
+    let ratio = baseRatio + displacementX / switchConfig.TRAVEL;
+
+    // Damped overflow
+    const overflow = ratio < 0 ? -ratio : ratio > 1 ? ratio - 1 : 0;
+    const overflowSign = ratio < 0 ? -1 : 1;
+    const dampedOverflow = (overflowSign * overflow) / 22;
+    switchState.xDragRatio = Math.min(1, Math.max(0, ratio)) + dampedOverflow;
+
+    switchSprings.xRatio.setTarget(switchState.xDragRatio);
+    startSwitchAnimation();
+  }
+
+  function onPointerUp(e) {
+    if (!switchState.pointerDown) return;
+    switchState.pointerDown = false;
+
+    const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const distance = Math.abs(clientX - switchState.initialPointerX);
+
+    if (distance < 4) {
+      // Click - toggle
+      switchState.checked = !switchState.checked;
+    } else {
+      // Drag - decide based on position
+      switchState.checked = switchState.xDragRatio > 0.5;
+    }
+
+    startSwitchAnimation();
+  }
+
+  switchThumb.addEventListener("mousedown", onPointerDown);
+  switchThumb.addEventListener("touchstart", onPointerDown, { passive: false });
+
+  switchTrack.addEventListener("click", (e) => {
+    if (e.target === switchTrack) {
+      switchState.checked = !switchState.checked;
+      startSwitchAnimation();
+    }
+  });
+
+  window.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("touchmove", onPointerMove, { passive: false });
+  window.addEventListener("mouseup", onPointerUp);
+  window.addEventListener("touchend", onPointerUp);
+
+  switchForceActive.addEventListener("change", (e) => {
+    switchState.forceActive = e.target.checked;
+    startSwitchAnimation();
+  });
+
+  // Setup controls
+  const switchControls = {
+    switchSpecularOpacity: {
+      prop: "specularOpacity",
+      format: (v) => v.toFixed(2),
+      update: () =>
+        document
+          .getElementById("switchSpecularAlpha")
+          .setAttribute("slope", switchState.specularOpacity),
+    },
+    switchSpecularSaturation: {
+      prop: "specularSaturation",
+      format: (v) => Math.round(v).toString(),
+      update: () =>
+        document
+          .getElementById("switchSaturation")
+          .setAttribute("values", switchState.specularSaturation),
+    },
+    switchRefraction: {
+      prop: "refractionBase",
+      format: (v) => v.toFixed(2),
+      update: () => startSwitchAnimation(),
+    },
+    switchBlur: {
+      prop: "blur",
+      format: (v) => v.toFixed(1),
+      update: () =>
+        document
+          .getElementById("switchFilterBlur")
+          .setAttribute("stdDeviation", switchState.blur),
+    },
+  };
+
+  Object.entries(switchControls).forEach(([id, config]) => {
+    const slider = document.getElementById(id);
+    const valueDisplay = document.getElementById(id + "Value");
+    slider.addEventListener("input", () => {
+      const value = parseFloat(slider.value);
+      switchState[config.prop] = value;
+      valueDisplay.textContent = config.format(value);
+      config.update();
+    });
+  });
+
+  // Initial render
+  startSwitchAnimation();
+}
+
+// Run on DOM ready
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    init();
+    initSliderDemo();
+    initSwitchDemo();
+  });
+} else {
+  init();
+  initSliderDemo();
+  initSwitchDemo();
+}
+
+/* =====================================================================
+   BANK.JS — extensions de la démo Liquid Glass
+   Dépend de scripts.js (SurfaceEquations, Spring, state, updateFilter,
+   calculateDisplacementMap1D/2D, calculateSpecularHighlight,
+   imageDataToDataURL, startAnimationLoop, updateContentClonePosition…)
+   ---------------------------------------------------------------------
+   1. Utilitaires (DOM, toast, cache de cartes de déplacement)
+   2. Fabrique de filtres SVG
+   3. Fabrique de curseurs en verre        -> createGlassSlider
+   4. Fabrique d'interrupteurs en verre    -> createGlassSwitch
+   5. Presets de la lentille (boutons en ligne)
+   6. Banque de curseurs (lentille, couleurs, dégradés, formes, surfaces)
+   7. Banque d'interrupteurs
+   8. Banque de curseurs souris (CSS + SVG personnalisés)
+   9. Télémétrie + export
+  10. Navigation + démarrage
+   ===================================================================== */
+
+(function () {
+  "use strict";
+
+  /* ===================================================================
+     1. UTILITAIRES
+     =================================================================== */
+
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  let uid = 0;
+  const registry = { sliders: [], switches: [] };
+
+  function h(tag, className, style, parent) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (style) Object.assign(node.style, style);
+    if (parent) parent.appendChild(node);
+    return node;
+  }
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  let toastEl = null;
+  let toastTimer = null;
+  function toast(message) {
+    if (!toastEl) {
+      toastEl = h("div", "toast", null, document.body);
+      toastEl.setAttribute("role", "status");
+    }
+    toastEl.textContent = message;
+    toastEl.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("is-visible"), 1800);
+  }
+
+  async function copyText(text, okMessage) {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast(okMessage || "Copié dans le presse-papiers");
+    } catch (err) {
+      // Repli : textarea temporaire
+      const ta = h("textarea", null, { position: "fixed", opacity: "0" }, document.body);
+      ta.value = text;
+      ta.select();
+      try {
+        document.execCommand("copy");
+        toast(okMessage || "Copié dans le presse-papiers");
+      } catch (e2) {
+        toast("Copie impossible");
+      }
+      ta.remove();
+    }
+  }
+
+  // Cache : évite de recalculer les cartes pour des configs identiques
+  const mapCache = new Map();
+  function getMaps(w, hgt, r, bezel, thickness, n, surface) {
+    const key = [w, hgt, r, bezel, thickness, n, surface].join("|");
+    if (mapCache.has(key)) return mapCache.get(key);
+    const pre = calculateDisplacementMap1D(
+      thickness,
+      bezel,
+      SurfaceEquations[surface],
+      n,
+    );
+    const maxD = Math.max(...pre.map(Math.abs)) || 1;
+    const disp = calculateDisplacementMap2D(w, hgt, w, hgt, r, bezel, maxD, pre);
+    const spec = calculateSpecularHighlight(w, hgt, r, bezel);
+    const result = {
+      disp: imageDataToDataURL(disp),
+      spec: imageDataToDataURL(spec),
+      maxD,
+    };
+    mapCache.set(key, result);
+    return result;
+  }
+
+  /* ===================================================================
+     2. FABRIQUE DE FILTRES SVG
+     =================================================================== */
+
+  function buildFilter(id, w, hgt, maps, o) {
+    const svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("class", "glass-filter-svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.style.cssText = "width:0;height:0;position:absolute";
+    svg.innerHTML = `
+      <defs>
+        <filter id="${id}" x="-50%" y="-50%" width="200%" height="200%"
+                color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="${o.blur}" result="blurred_source" />
+          <feImage href="${maps.disp}" x="0" y="0" width="${w}" height="${hgt}"
+                   result="displacement_map" preserveAspectRatio="none" />
+          <feDisplacementMap in="blurred_source" in2="displacement_map"
+                   scale="${maps.maxD * o.refraction}"
+                   xChannelSelector="R" yChannelSelector="G" result="displaced" />
+          <feColorMatrix in="displaced" type="saturate" values="${o.saturation}"
+                   result="displaced_saturated" />
+          <feImage href="${maps.spec}" x="0" y="0" width="${w}" height="${hgt}"
+                   result="specular_layer" preserveAspectRatio="none" />
+          <feComposite in="displaced_saturated" in2="specular_layer" operator="in"
+                   result="specular_saturated" />
+          <feComponentTransfer in="specular_layer" result="specular_faded">
+            <feFuncA type="linear" slope="${o.specular}" />
+          </feComponentTransfer>
+          <feBlend in="specular_saturated" in2="displaced" mode="normal"
+                   result="withSaturation" />
+          <feBlend in="specular_faded" in2="withSaturation" mode="normal" />
+        </filter>
+      </defs>`;
+    return {
+      svg,
+      blur: svg.querySelector("feGaussianBlur"),
+      displacement: svg.querySelector("feDisplacementMap"),
+      saturation: svg.querySelector("feColorMatrix"),
+      specAlpha: svg.querySelector("feFuncA"),
+    };
+  }
+
+  /* ===================================================================
+     3. FABRIQUE DE CURSEURS EN VERRE
+     =================================================================== */
+
+  const DEFAULT_SLIDER = {
+    label: "Curseur",
+    note: "",
+    min: 0,
+    max: 100,
+    step: 1,
+    value: 50,
+    unit: "",
+    decimals: 0,
+    format: null,
+    fillColor: "#0377f7",
+    trackColor: "#89898f66",
+    trackBackground: null,
+    thumbW: 90,
+    thumbH: 60,
+    thumbR: 30,
+    trackW: 300,
+    trackH: 14,
+    bezel: 16,
+    thickness: 80,
+    n: 1.45,
+    surface: "convex_squircle",
+    restScale: 0.6,
+    dragScale: 1,
+    specular: 0.4,
+    saturation: 7,
+    blur: 0,
+    refraction: 1,
+    areaH: 110,
+    onChange: null,
+  };
+
+  function createGlassSlider(parent, options) {
+    const o = Object.assign({}, DEFAULT_SLIDER, options);
+    const id = "bankSlider" + ++uid;
+    const trackTop = (o.thumbH - o.trackH) / 2;
+    const restW = o.thumbW * o.restScale;
+
+    const fmt =
+      o.format ||
+      ((v) => (o.decimals ? v.toFixed(o.decimals) : String(Math.round(v))) + o.unit);
+
+    /* --- DOM --- */
+    const card = h("div", "bank-card", null, parent);
+    const head = h("div", "bank-card-head", null, card);
+    const title = h("span", "bank-card-title", null, head);
+    title.textContent = o.label;
+    const valueEl = h("span", "bank-card-value", null, head);
+
+    const area = h("div", "bank-area", { height: o.areaH + "px" }, card);
+    const box = h(
+      "div",
+      "bank-slider",
+      { width: o.trackW + "px", height: o.thumbH + "px" },
+      area,
+    );
+
+    const trackStyle = {
+      top: trackTop + "px",
+      width: o.trackW + "px",
+      height: o.trackH + "px",
+      borderRadius: o.trackH / 2 + "px",
+    };
+    const track = h("div", "bank-track", trackStyle, box);
+    if (o.trackBackground) track.style.background = o.trackBackground;
+    else track.style.backgroundColor = o.trackColor;
+
+    const trackInner = h(
+      "div",
+      "bank-track-inner",
+      { borderRadius: o.trackH / 2 + "px" },
+      track,
+    );
+    const fill = h("div", "bank-fill", { borderRadius: o.trackH / 2 - 1 + "px" }, trackInner);
+    if (o.fillColor) fill.style.backgroundColor = o.fillColor;
+    else fill.style.display = "none";
+
+    const thumb = h(
+      "div",
+      "bank-thumb",
+      {
+        width: o.thumbW + "px",
+        height: o.thumbH + "px",
+        borderRadius: o.thumbR + "px",
+        transform: `scale(${o.restScale})`,
+      },
+      box,
+    );
+    thumb.tabIndex = 0;
+    thumb.setAttribute("role", "slider");
+    thumb.setAttribute("aria-label", o.label);
+    thumb.setAttribute("aria-valuemin", String(o.min));
+    thumb.setAttribute("aria-valuemax", String(o.max));
+
+    const clone = h("div", "bank-thumb-clone", null, thumb);
+    const cloneInner = h("div", "bank-thumb-clone-inner", null, clone);
+    const cloneTrack = h(
+      "div",
+      "bank-clone-track",
+      {
+        width: o.trackW + "px",
+        height: o.trackH + "px",
+        borderRadius: o.trackH / 2 + "px",
+      },
+      cloneInner,
+    );
+    if (o.trackBackground) cloneTrack.style.background = o.trackBackground;
+    else cloneTrack.style.backgroundColor = o.trackColor;
+    const cloneFill = h(
+      "div",
+      "bank-clone-fill",
+      { borderRadius: o.trackH / 2 - 1 + "px" },
+      cloneTrack,
+    );
+    if (o.fillColor) cloneFill.style.backgroundColor = o.fillColor;
+    else cloneFill.style.display = "none";
+
+    const maps = getMaps(o.thumbW, o.thumbH, o.thumbR, o.bezel, o.thickness, o.n, o.surface);
+    const filter = buildFilter(id + "Filter", o.thumbW, o.thumbH, maps, o);
+    thumb.appendChild(filter.svg);
+    clone.style.filter = `url(#${id}Filter)`;
+    h("div", "bank-thumb-inner", null, thumb);
+
+    if (o.note) {
+      const note = h("div", "bank-card-note", null, card);
+      note.textContent = o.note;
+    }
+
+    /* --- État --- */
+    let value = clamp(o.value, o.min, o.max);
+    let pct = ((value - o.min) / (o.max - o.min)) * 100;
+    let pointerDown = false;
+    let forceActive = false;
+    let thumbX = 0;
+    let raf = null;
+    let flashTimer = null;
+
+    const springs = {
+      scale: new Spring(o.restScale, 2000, 80),
+      bg: new Spring(1, 2000, 80),
+      ratio: new Spring(0.4 * o.refraction, 100, 10),
+    };
+
+    const pctToValue = (p) => {
+      const raw = o.min + (p / 100) * (o.max - o.min);
+      const snapped = Math.round(raw / o.step) * o.step;
+      return clamp(+snapped.toFixed(6), o.min, o.max);
+    };
+    const valueToPct = (v) => ((v - o.min) / (o.max - o.min)) * 100;
+
+    function updateUI() {
+      fill.style.width = pct + "%";
+      cloneFill.style.width = pct + "%";
+
+      const ratio = pct / 100;
+      const x0 = restW / 2;
+      const x100 = o.trackW - restW / 2;
+      const centerX = x0 + ratio * (x100 - x0);
+      thumbX = centerX - o.thumbW / 2;
+      thumb.style.left = thumbX + "px";
+
+      const a = area.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      const containerLeft = b.left - a.left;
+      const containerTop = b.top - a.top;
+
+      cloneInner.style.width = a.width + "px";
+      cloneInner.style.height = a.height + "px";
+      cloneInner.style.transform = `translate(${-(containerLeft + thumbX)}px, ${-containerTop}px)`;
+      cloneTrack.style.left = containerLeft + "px";
+      cloneTrack.style.top = containerTop + trackTop + "px";
+
+      valueEl.textContent = fmt(value);
+      thumb.setAttribute("aria-valuenow", String(value));
+      thumb.setAttribute("aria-valuetext", fmt(value));
+    }
+
+    function frame() {
+      const dt = 1 / 60;
+      const active = forceActive || pointerDown;
+      springs.scale.setTarget(active ? o.dragScale : o.restScale);
+      springs.bg.setTarget(active ? 0.1 : 1);
+      springs.ratio.setTarget((active ? 0.9 : 0.4) * o.refraction);
+
+      const s = springs.scale.update(dt);
+      const bg = springs.bg.update(dt);
+      const r = springs.ratio.update(dt);
+
+      thumb.style.transform = `scale(${s})`;
+      thumb.style.backgroundColor = `rgba(255, 255, 255, ${bg})`;
+
+      const cloneOpacity = 1 - bg;
+      clone.style.opacity = cloneOpacity;
+      clone.style.display = cloneOpacity < 0.01 ? "none" : "block";
+
+      filter.displacement.setAttribute("scale", maps.maxD * r);
+
+      if (Object.values(springs).every((sp) => sp.isSettled())) raf = null;
+      else raf = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (!raf) raf = requestAnimationFrame(frame);
+    }
+
+    function commit(newPct, notify) {
+      const newValue = pctToValue(clamp(newPct, 0, 100));
+      const changed = newValue !== value;
+      value = newValue;
+      pct = valueToPct(value);
+      updateUI();
+      if (changed && notify && typeof o.onChange === "function") o.onChange(value, api);
+    }
+
+    function pointerToPct(clientX) {
+      const r = track.getBoundingClientRect();
+      const x0 = r.left + restW / 2;
+      const x100 = r.right - restW / 2;
+      return ((clientX - x0) / (x100 - x0)) * 100;
+    }
+
+    function onMove(ev) {
+      if (!pointerDown) return;
+      ev.preventDefault();
+      commit(pointerToPct(ev.clientX), true);
+    }
+
+    function onUp() {
+      pointerDown = false;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      start();
+    }
+
+    function onDown(ev) {
+      ev.preventDefault();
+      pointerDown = true;
+      if (ev.currentTarget === track) commit(pointerToPct(ev.clientX), true);
+      thumb.focus({ preventScroll: true });
+      window.addEventListener("pointermove", onMove, { passive: false });
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
+      start();
+    }
+
+    thumb.addEventListener("pointerdown", onDown);
+    track.addEventListener("pointerdown", onDown);
+
+    thumb.addEventListener("keydown", (ev) => {
+      const big = (o.max - o.min) / 10;
+      let next = null;
+      switch (ev.key) {
+        case "ArrowLeft":
+        case "ArrowDown":
+          next = value - o.step;
+          break;
+        case "ArrowRight":
+        case "ArrowUp":
+          next = value + o.step;
+          break;
+        case "PageDown":
+          next = value - big;
+          break;
+        case "PageUp":
+          next = value + big;
+          break;
+        case "Home":
+          next = o.min;
+          break;
+        case "End":
+          next = o.max;
+          break;
+        default:
+          return;
+      }
+      ev.preventDefault();
+      commit(valueToPct(clamp(next, o.min, o.max)), true);
+      // Flash : on "active" brièvement le verre au clavier
+      forceActive = true;
+      start();
+      clearTimeout(flashTimer);
+      flashTimer = setTimeout(() => {
+        forceActive = false;
+        start();
+      }, 260);
+    });
+
+    window.addEventListener("resize", updateUI);
+
+    const api = {
+      card,
+      thumb,
+      options: o,
+      getValue: () => value,
+      setValue(v, silent) {
+        value = pctToValue(valueToPct(clamp(v, o.min, o.max)));
+        pct = valueToPct(value);
+        updateUI();
+        if (!silent && typeof o.onChange === "function") o.onChange(value, api);
+      },
+      setForceActive(flag) {
+        forceActive = !!flag;
+        start();
+      },
+      refresh: updateUI,
+    };
+
+    updateUI();
+    start();
+    registry.sliders.push(api);
+    return api;
+  }
+
+  /* ===================================================================
+     4. FABRIQUE D'INTERRUPTEURS EN VERRE
+     =================================================================== */
+
+  const DEFAULT_SWITCH = {
+    label: "Interrupteur",
+    note: "",
+    checked: true,
+    onColor: [59, 191, 78, 0.93],
+    offColor: [148, 148, 159, 0.47],
+    trackW: 160,
+    trackH: 67,
+    thumbW: 146,
+    thumbH: 92,
+    thumbR: 46,
+    bezel: 19,
+    thickness: 47,
+    n: 1.5,
+    surface: "convex_squircle",
+    restScale: 0.65,
+    activeScale: 0.9,
+    specular: 0.5,
+    saturation: 6,
+    blur: 0.2,
+    refraction: 1,
+    areaH: 150,
+    onChange: null,
+  };
+
+  function createGlassSwitch(parent, options) {
+    const o = Object.assign({}, DEFAULT_SWITCH, options);
+    const id = "bankSwitch" + ++uid;
+    const restOffset = ((1 - o.restScale) * o.thumbW) / 2;
+    const travel = o.trackW - o.trackH - (o.thumbW - o.thumbH) * o.restScale;
+    const marginLeft = -restOffset + (o.trackH - o.thumbH * o.restScale) / 2;
+    const thumbYOffset = o.trackH / 2 - o.thumbH / 2;
+
+    /* --- DOM --- */
+    const card = h("div", "bank-card", null, parent);
+    const head = h("div", "bank-card-head", null, card);
+    const title = h("span", "bank-card-title", null, head);
+    title.textContent = o.label;
+    const valueEl = h("span", "bank-card-value", null, head);
+
+    const area = h("div", "bank-area", { height: o.areaH + "px" }, card);
+    const box = h("div", "bank-switch-box", null, area);
+    const track = h(
+      "div",
+      "bank-switch-track",
+      {
+        width: o.trackW + "px",
+        height: o.trackH + "px",
+        borderRadius: o.trackH / 2 + "px",
+      },
+      box,
+    );
+
+    const thumb = h(
+      "div",
+      "bank-switch-thumb",
+      {
+        width: o.thumbW + "px",
+        height: o.thumbH + "px",
+        borderRadius: o.thumbR + "px",
+        top: o.trackH / 2 + "px",
+        transform: `translateY(-50%) scale(${o.restScale})`,
+      },
+      track,
+    );
+    thumb.tabIndex = 0;
+    thumb.setAttribute("role", "switch");
+    thumb.setAttribute("aria-label", o.label);
+
+    const clone = h("div", "bank-thumb-clone", null, thumb);
+    const cloneInner = h("div", "bank-thumb-clone-inner", null, clone);
+    const cloneTrack = h(
+      "div",
+      "bank-clone-track",
+      {
+        width: o.trackW + "px",
+        height: o.trackH + "px",
+        borderRadius: o.trackH / 2 + "px",
+      },
+      cloneInner,
+    );
+
+    const maps = getMaps(o.thumbW, o.thumbH, o.thumbR, o.bezel, o.thickness, o.n, o.surface);
+    const filter = buildFilter(id + "Filter", o.thumbW, o.thumbH, maps, o);
+    thumb.appendChild(filter.svg);
+    clone.style.filter = `url(#${id}Filter)`;
+    h("div", "bank-thumb-inner", null, thumb);
+
+    if (o.note) {
+      const note = h("div", "bank-card-note", null, card);
+      note.textContent = o.note;
+    }
+
+    /* --- État --- */
+    let checked = !!o.checked;
+    let pointerDown = false;
+    let forceActive = false;
+    let initialX = 0;
+    let xDrag = checked ? 1 : 0;
+    let raf = null;
+
+    const springs = {
+      xRatio: new Spring(checked ? 1 : 0, 1000, 80),
+      scale: new Spring(o.restScale, 2000, 80),
+      bg: new Spring(1, 2000, 80),
+      trackColor: new Spring(checked ? 1 : 0, 1000, 80),
+      ratio: new Spring(0.4 * o.refraction, 100, 10),
+    };
+
+    function frame() {
+      const dt = 1 / 60;
+      const active = forceActive || pointerDown;
+
+      springs.scale.setTarget(active ? o.activeScale : o.restScale);
+      springs.bg.setTarget(active ? 0.1 : 1);
+      springs.ratio.setTarget((active ? 0.9 : 0.4) * o.refraction);
+      if (!pointerDown) springs.xRatio.setTarget(checked ? 1 : 0);
+
+      const considerChecked = pointerDown ? (xDrag > 0.5 ? 1 : 0) : checked ? 1 : 0;
+      springs.trackColor.setTarget(considerChecked);
+
+      const xRatio = springs.xRatio.update(dt);
+      const scale = springs.scale.update(dt);
+      const bg = springs.bg.update(dt);
+      const tc = springs.trackColor.update(dt);
+      const ratio = springs.ratio.update(dt);
+
+      const cloneOpacity = 1 - bg;
+      clone.style.opacity = cloneOpacity;
+      clone.style.display = cloneOpacity < 0.01 ? "none" : "block";
+
+      const thumbX = marginLeft + xRatio * travel;
+      thumb.style.left = thumbX + "px";
+      thumb.style.transform = `translateY(-50%) scale(${scale})`;
+      thumb.style.backgroundColor = `rgba(255, 255, 255, ${bg})`;
+      thumb.style.boxShadow = pointerDown
+        ? "0 4px 22px rgba(0,0,0,0.1), inset 2px 7px 24px rgba(0,0,0,0.09), inset -2px -7px 24px rgba(255,255,255,0.09)"
+        : "0 4px 22px rgba(0,0,0,0.1)";
+
+      const r = Math.round(o.offColor[0] + (o.onColor[0] - o.offColor[0]) * tc);
+      const g = Math.round(o.offColor[1] + (o.onColor[1] - o.offColor[1]) * tc);
+      const b = Math.round(o.offColor[2] + (o.onColor[2] - o.offColor[2]) * tc);
+      const a = o.offColor[3] + (o.onColor[3] - o.offColor[3]) * tc;
+      const color = `rgba(${r}, ${g}, ${b}, ${a})`;
+      track.style.backgroundColor = color;
+      cloneTrack.style.backgroundColor = color;
+
+      const ar = area.getBoundingClientRect();
+      const tr = track.getBoundingClientRect();
+      const containerLeft = tr.left - ar.left;
+      const containerTop = tr.top - ar.top;
+      cloneInner.style.width = ar.width + "px";
+      cloneInner.style.height = ar.height + "px";
+      cloneInner.style.transform = `translate(${-(containerLeft + thumbX)}px, ${-(containerTop + thumbYOffset)}px)`;
+      cloneTrack.style.left = containerLeft + "px";
+      cloneTrack.style.top = containerTop + "px";
+
+      filter.displacement.setAttribute("scale", maps.maxD * ratio);
+
+      if (Object.values(springs).every((sp) => sp.isSettled())) raf = null;
+      else raf = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (!raf) raf = requestAnimationFrame(frame);
+    }
+
+    function setChecked(next, notify) {
+      const changed = next !== checked;
+      checked = next;
+      valueEl.textContent = checked ? "ON" : "OFF";
+      thumb.setAttribute("aria-checked", String(checked));
+      start();
+      if (changed && notify && typeof o.onChange === "function") o.onChange(checked, api);
+    }
+
+    function onMove(ev) {
+      if (!pointerDown) return;
+      const baseRatio = checked ? 1 : 0;
+      const ratio = baseRatio + (ev.clientX - initialX) / travel;
+      const overflow = ratio < 0 ? -ratio : ratio > 1 ? ratio - 1 : 0;
+      const overflowSign = ratio < 0 ? -1 : 1;
+      const dampedOverflow = (overflowSign * overflow) / 22;
+      xDrag = Math.min(1, Math.max(0, ratio)) + dampedOverflow;
+      springs.xRatio.setTarget(xDrag);
+      start();
+    }
+
+    function onUp(ev) {
+      if (!pointerDown) return;
+      pointerDown = false;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      const distance = Math.abs(ev.clientX - initialX);
+      if (distance < 4) setChecked(!checked, true);
+      else setChecked(xDrag > 0.5, true);
+      start();
+    }
+
+    thumb.addEventListener("pointerdown", (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      pointerDown = true;
+      initialX = ev.clientX;
+      xDrag = checked ? 1 : 0;
+      thumb.focus({ preventScroll: true });
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
+      start();
+    });
+
+    track.addEventListener("click", (ev) => {
+      if (ev.target === track) setChecked(!checked, true);
+    });
+
+    thumb.addEventListener("keydown", (ev) => {
+      if (ev.key === " " || ev.key === "Enter") {
+        ev.preventDefault();
+        setChecked(!checked, true);
+      } else if (ev.key === "ArrowLeft") {
+        ev.preventDefault();
+        setChecked(false, true);
+      } else if (ev.key === "ArrowRight") {
+        ev.preventDefault();
+        setChecked(true, true);
+      }
+    });
+
+    const api = {
+      card,
+      options: o,
+      isChecked: () => checked,
+      setChecked: (v, silent) => setChecked(!!v, !silent),
+      setForceActive(flag) {
+        forceActive = !!flag;
+        start();
+      },
+    };
+
+    valueEl.textContent = checked ? "ON" : "OFF";
+    thumb.setAttribute("aria-checked", String(checked));
+    start();
+    registry.switches.push(api);
+    return api;
+  }
+
+  /* ===================================================================
+     5. PRESETS DE LA LENTILLE (boutons sur une seule ligne)
+     =================================================================== */
+
+  const PRESETS = [
+    { name: "Défaut", w: 200, h: 140, r: 70, surface: "convex_squircle", bezel: 30, thickness: 150, refraction: 1.5, specular: 1, blur: 0.5 },
+    { name: "Loupe", w: 180, h: 180, r: 90, surface: "convex_circle", bezel: 60, thickness: 180, refraction: 1.5, specular: 1, blur: 0 },
+    { name: "Capsule", w: 320, h: 110, r: 55, surface: "convex_squircle", bezel: 26, thickness: 120, refraction: 1.2, specular: 0.8, blur: 0.3 },
+    { name: "Goutte", w: 150, h: 210, r: 75, surface: "convex_circle", bezel: 50, thickness: 160, refraction: 1.4, specular: 1, blur: 0.4 },
+    { name: "Cristal", w: 240, h: 150, r: 60, surface: "lip", bezel: 40, thickness: 140, refraction: 1.3, specular: 1, blur: 0.2 },
+    { name: "Gel", w: 220, h: 140, r: 70, surface: "concave", bezel: 45, thickness: 110, refraction: 1.5, specular: 0.7, blur: 0.8 },
+    { name: "Givré", w: 260, h: 140, r: 50, surface: "convex_squircle", bezel: 20, thickness: 90, refraction: 0.6, specular: 0.6, blur: 3.5 },
+    { name: "Bulle", w: 130, h: 130, r: 65, surface: "convex_circle", bezel: 65, thickness: 200, refraction: 1.5, specular: 1, blur: 0 },
+    { name: "Bandeau", w: 420, h: 80, r: 40, surface: "convex_squircle", bezel: 24, thickness: 100, refraction: 1.1, specular: 0.9, blur: 0.5 },
+    { name: "Extrême", w: 200, h: 140, r: 70, surface: "convex_squircle", bezel: 70, thickness: 200, refraction: 1.5, specular: 1, blur: 0 },
+  ];
+
+  const LENS_CONTROLS = [
+    { id: "bezelWidth", prop: "bezelWidth", label: "Bezel Width", min: 5, max: 70, step: 1, fmt: (v) => String(Math.round(v)) },
+    { id: "glassThickness", prop: "glassThickness", label: "Glass Thickness", min: 10, max: 200, step: 1, fmt: (v) => String(Math.round(v)) },
+    { id: "refractionScale", prop: "refractionScale", label: "Refraction Scale", min: 0, max: 1.5, step: 0.01, fmt: (v) => v.toFixed(2) },
+    { id: "specularOpacity", prop: "specularOpacity", label: "Specular Opacity", min: 0, max: 1, step: 0.01, fmt: (v) => v.toFixed(2) },
+    { id: "blur", prop: "blur", label: "Blur", min: 0, max: 10, step: 0.1, fmt: (v) => v.toFixed(1) },
+  ];
+
+  const lensSliders = {};
+
+  function syncNative(control, value) {
+    const input = document.getElementById(control.id);
+    const label = document.getElementById(control.id + "Value");
+    if (input) input.value = value;
+    if (label) label.textContent = control.fmt(value);
+  }
+
+  function syncLinkedSliders() {
+    LENS_CONTROLS.forEach((c) => {
+      if (lensSliders[c.id]) lensSliders[c.id].setValue(state[c.prop], true);
+    });
+  }
+
+  let presetButtons = [];
+
+  function setActivePreset(name) {
+    presetButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.preset === name));
+  }
+
+  function applyLens(p) {
+    const area = document.getElementById("demoArea");
+    const areaRect = area.getBoundingClientRect();
+
+    state.objectWidth = p.w;
+    state.objectHeight = p.h;
+    state.radius = p.r;
+    state.surfaceType = p.surface;
+    state.bezelWidth = p.bezel;
+    state.glassThickness = p.thickness;
+    state.refractionScale = p.refraction;
+    state.specularOpacity = p.specular;
+    state.blur = p.blur;
+
+    glassElement.style.width = p.w + "px";
+    glassElement.style.height = p.h + "px";
+    glassElement.style.borderRadius = p.r + "px";
+
+    ["displacementImage", "specularImage"].forEach((imgId) => {
+      const img = document.getElementById(imgId);
+      img.setAttribute("width", p.w);
+      img.setAttribute("height", p.h);
+    });
+
+    const clipRect = document.querySelector("#glassClip rect");
+    if (clipRect) {
+      clipRect.setAttribute("width", p.w);
+      clipRect.setAttribute("height", p.h);
+      clipRect.setAttribute("rx", p.r);
+      clipRect.setAttribute("ry", p.r);
+    }
+
+    [displacementPreview, specularPreview].forEach((cv) => {
+      cv.width = p.w;
+      cv.height = p.h;
+    });
+
+    document.querySelectorAll(".surface-btn").forEach((b) => {
+      b.classList.toggle("active", b.dataset.surface === p.surface);
+    });
+
+    LENS_CONTROLS.forEach((c) => syncNative(c, state[c.prop]));
+
+    // Garde la lentille dans la zone
+    const curX = parseFloat(glassElement.style.left) || 0;
+    const curY = parseFloat(glassElement.style.top) || 0;
+    glassElement.style.left = clamp(curX, 0, Math.max(0, areaRect.width - p.w)) + "px";
+    glassElement.style.top = clamp(curY, 0, Math.max(0, areaRect.height - p.h)) + "px";
+
+    updateFilter();
+    updateContentClonePosition(true);
+    startAnimationLoop();
+    syncLinkedSliders();
+  }
+
+  function randomPreset() {
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const w = Math.round(rnd(110, 380));
+    const hh = Math.round(rnd(80, 220));
+    const r = Math.round(Math.min(w, hh) / 2 - rnd(0, Math.min(w, hh) / 4));
+    const surfaces = Object.keys(SurfaceEquations);
+    return {
+      name: "Aléatoire",
+      w,
+      h: hh,
+      r,
+      surface: surfaces[Math.floor(Math.random() * surfaces.length)],
+      bezel: Math.round(clamp(rnd(10, r), 5, 70)),
+      thickness: Math.round(rnd(40, 200)),
+      refraction: +rnd(0.4, 1.5).toFixed(2),
+      specular: +rnd(0.3, 1).toFixed(2),
+      blur: +rnd(0, 3).toFixed(1),
+    };
+  }
+
+  function buildPresetRow() {
+    const row = document.getElementById("presetRow");
+    if (!row) return;
+
+    PRESETS.forEach((p) => {
+      const btn = h("button", "preset-btn", null, row);
+      btn.type = "button";
+      btn.textContent = p.name;
+      btn.dataset.preset = p.name;
+      if (p.name === "Défaut") btn.classList.add("is-active");
+      btn.addEventListener("click", () => {
+        applyLens(p);
+        setActivePreset(p.name);
+      });
+      presetButtons.push(btn);
+    });
+
+    const rndBtn = h("button", "preset-btn is-action", null, row);
+    rndBtn.type = "button";
+    rndBtn.textContent = "🎲 Aléatoire";
+    rndBtn.addEventListener("click", () => {
+      applyLens(randomPreset());
+      setActivePreset(null);
+    });
+
+    // Si l'utilisateur touche à un réglage, le preset n'est plus "actif"
+    document.querySelectorAll(".surface-btn").forEach((b) =>
+      b.addEventListener("click", () => setActivePreset(null)),
+    );
+    LENS_CONTROLS.forEach((c) => {
+      const input = document.getElementById(c.id);
+      if (input) input.addEventListener("input", () => setActivePreset(null));
+    });
+  }
+
+  /* ===================================================================
+     6. BANQUE DE CURSEURS
+     =================================================================== */
+
+  function buildLensGroup() {
+    const grid = document.getElementById("bankLens");
+    if (!grid) return;
+
+    LENS_CONTROLS.forEach((c) => {
+      const inst = createGlassSlider(grid, {
+        label: c.label,
+        note: "Lié à la lentille interactive : bouge ce curseur, la loupe réagit.",
+        min: c.min,
+        max: c.max,
+        step: c.step,
+        value: state[c.prop],
+        format: c.fmt,
+        fillColor: "#667eea",
+        onChange: (v) => {
+          state[c.prop] = v;
+          syncNative(c, v);
+          setActivePreset(null);
+          updateFilter();
+        },
+      });
+      lensSliders[c.id] = inst;
+
+      const input = document.getElementById(c.id);
+      if (input) {
+        input.addEventListener("input", () => inst.setValue(parseFloat(input.value), true));
+      }
+    });
+  }
+
+  function buildColorGroup() {
+    const grid = document.getElementById("bankColors");
+    if (!grid) return;
+
+    const colors = [
+      { label: "Bleu", color: "#0377f7", value: 62 },
+      { label: "Vert", color: "#34c759", value: 35 },
+      { label: "Orange", color: "#ff9f0a", value: 80 },
+      { label: "Rouge", color: "#ff3b30", value: 18 },
+      { label: "Violet", color: "#af52de", value: 54 },
+      { label: "Rose", color: "#ff2d92", value: 72 },
+      { label: "Turquoise", color: "#30b0c7", value: 46 },
+      { label: "Graphite", color: "#636366", value: 90 },
+    ];
+
+    colors.forEach((c, i) => {
+      createGlassSlider(grid, {
+        label: c.label,
+        min: 0,
+        max: 100,
+        step: 1,
+        value: c.value,
+        unit: "%",
+        fillColor: c.color,
+        specular: 0.3 + (i % 4) * 0.12,
+        refraction: 0.8 + (i % 3) * 0.2,
+      });
+    });
+  }
+
+  function buildGradientGroup() {
+    const grid = document.getElementById("bankGradients");
+    if (!grid) return;
+
+    const hueStops = [];
+    for (let i = 0; i <= 12; i++) hueStops.push(`hsl(${i * 30}, 90%, 55%)`);
+
+    const defs = [
+      {
+        label: "Teinte",
+        min: 0,
+        max: 360,
+        step: 1,
+        value: 210,
+        unit: "°",
+        track: `linear-gradient(90deg, ${hueStops.join(", ")})`,
+        note: "Piste arc-en-ciel : le verre déforme les couleurs sous le curseur.",
+      },
+      {
+        label: "Température",
+        min: 2000,
+        max: 10000,
+        step: 100,
+        value: 6500,
+        unit: " K",
+        track: "linear-gradient(90deg, #ff8a2b, #ffd9a8, #ffffff, #bcd8ff, #6fa8ff)",
+      },
+      {
+        label: "Luminosité",
+        min: 0,
+        max: 100,
+        step: 1,
+        value: 70,
+        unit: "%",
+        track: "linear-gradient(90deg, #0b0b10, #8a8a95, #ffffff)",
+      },
+      {
+        label: "Saturation",
+        min: 0,
+        max: 100,
+        step: 1,
+        value: 55,
+        unit: "%",
+        track: "linear-gradient(90deg, #9a9a9a, #ff3b30)",
+      },
+    ];
+
+    defs.forEach((d) => {
+      createGlassSlider(grid, {
+        label: d.label,
+        note: d.note || "",
+        min: d.min,
+        max: d.max,
+        step: d.step,
+        value: d.value,
+        unit: d.unit,
+        fillColor: null,
+        trackBackground: d.track,
+        trackW: 320,
+        trackH: 18,
+        thumbW: 96,
+        thumbH: 62,
+        thumbR: 31,
+        bezel: 18,
+        thickness: 90,
+        specular: 0.5,
+        saturation: 3,
+        areaH: 120,
+      });
+    });
+  }
+
+  function buildShapeGroup() {
+    const grid = document.getElementById("bankShapes");
+    if (!grid) return;
+
+    const shapes = [
+      { label: "Pilule XL", thumbW: 120, thumbH: 70, thumbR: 35, trackW: 320, trackH: 18, bezel: 20, thickness: 90, color: "#0377f7" },
+      { label: "Mini", thumbW: 60, thumbH: 40, thumbR: 20, trackW: 260, trackH: 8, bezel: 10, thickness: 50, color: "#34c759", areaH: 90 },
+      { label: "Carré arrondi", thumbW: 70, thumbH: 70, thumbR: 22, trackW: 300, trackH: 14, bezel: 18, thickness: 80, color: "#ff9f0a" },
+      { label: "Rond parfait", thumbW: 64, thumbH: 64, thumbR: 32, trackW: 300, trackH: 12, bezel: 22, thickness: 90, color: "#af52de" },
+      { label: "Piste épaisse", thumbW: 100, thumbH: 56, thumbR: 28, trackW: 320, trackH: 30, bezel: 16, thickness: 80, color: "#ff2d92" },
+      { label: "Piste fine", thumbW: 80, thumbH: 56, thumbR: 28, trackW: 320, trackH: 4, bezel: 16, thickness: 80, color: "#30b0c7", areaH: 100 },
+      { label: "Loupe forte", thumbW: 110, thumbH: 80, thumbR: 40, trackW: 320, trackH: 14, bezel: 30, thickness: 140, n: 1.9, refraction: 1.4, color: "#ff3b30", areaH: 130 },
+      { label: "Verre dépoli", thumbW: 100, thumbH: 60, thumbR: 30, trackW: 320, trackH: 14, bezel: 16, thickness: 60, blur: 4, refraction: 0.5, color: "#636366" },
+    ];
+
+    shapes.forEach((s, i) => {
+      createGlassSlider(grid, {
+        label: s.label,
+        min: 0,
+        max: 100,
+        step: 1,
+        value: 25 + ((i * 17) % 60),
+        unit: "%",
+        fillColor: s.color,
+        thumbW: s.thumbW,
+        thumbH: s.thumbH,
+        thumbR: s.thumbR,
+        trackW: s.trackW,
+        trackH: s.trackH,
+        bezel: s.bezel,
+        thickness: s.thickness,
+        n: s.n || 1.45,
+        blur: s.blur || 0,
+        refraction: s.refraction || 1,
+        areaH: s.areaH || 110,
+      });
+    });
+  }
+
+  function buildSurfaceGroup() {
+    const grid = document.getElementById("bankSurfaces");
+    if (!grid) return;
+
+    const defs = [
+      { label: "Convex Squircle", surface: "convex_squircle", n: 1.45, color: "#0377f7" },
+      { label: "Convex Circle", surface: "convex_circle", n: 1.45, color: "#34c759" },
+      { label: "Concave", surface: "concave", n: 1.45, color: "#ff9f0a" },
+      { label: "Lip", surface: "lip", n: 1.45, color: "#af52de" },
+      { label: "Indice 1.1 (faible)", surface: "convex_squircle", n: 1.1, color: "#30b0c7" },
+      { label: "Indice 1.9 (fort)", surface: "convex_squircle", n: 1.9, color: "#ff3b30" },
+    ];
+
+    defs.forEach((d, i) => {
+      createGlassSlider(grid, {
+        label: d.label,
+        note: `surface = ${d.surface} · n = ${d.n}`,
+        min: 0,
+        max: 100,
+        step: 1,
+        value: 30 + i * 9,
+        unit: "%",
+        fillColor: d.color,
+        surface: d.surface,
+        n: d.n,
+        bezel: 20,
+        thickness: 100,
+        thumbW: 100,
+        thumbH: 64,
+        thumbR: 32,
+        areaH: 120,
+      });
+    });
+  }
+
+  /* ===================================================================
+     7. BANQUE D'INTERRUPTEURS
+     =================================================================== */
+
+  function buildSwitchBank() {
+    const grid = document.getElementById("bankSwitches");
+    if (!grid) return;
+
+    const defs = [
+      { label: "Vert (iOS)", on: [59, 191, 78, 0.93], checked: true },
+      { label: "Bleu", on: [10, 132, 255, 0.93], checked: true },
+      { label: "Orange", on: [255, 159, 10, 0.93], checked: false },
+      { label: "Rouge", on: [255, 69, 58, 0.93], checked: true },
+      { label: "Violet", on: [175, 82, 222, 0.93], checked: false },
+      { label: "Turquoise", on: [48, 176, 199, 0.93], checked: true },
+      { label: "Graphite", on: [99, 99, 102, 0.93], checked: false },
+      { label: "Or", on: [255, 204, 0, 0.93], checked: true },
+    ];
+
+    defs.forEach((d, i) => {
+      createGlassSwitch(grid, {
+        label: d.label,
+        checked: d.checked,
+        onColor: d.on,
+        specular: 0.35 + (i % 4) * 0.12,
+        saturation: 4 + (i % 3) * 2,
+        refraction: 0.8 + (i % 3) * 0.2,
+        onChange: (v) => toast(`${d.label} → ${v ? "ON" : "OFF"}`),
+      });
+    });
+  }
+
+  /* ===================================================================
+     8. BANQUE DE CURSEURS SOURIS
+     =================================================================== */
+
+  const CSS_CURSORS = [
+    ["auto", "⌖"], ["default", "➤"], ["none", "∅"], ["context-menu", "☰"],
+    ["help", "?"], ["pointer", "☝"], ["progress", "◔"], ["wait", "⏳"],
+    ["cell", "✚"], ["crosshair", "+"], ["text", "I"], ["vertical-text", "⌶"],
+    ["alias", "↪"], ["copy", "⧉"], ["move", "✥"], ["no-drop", "⊘"],
+    ["not-allowed", "🚫"], ["grab", "✋"], ["grabbing", "✊"], ["all-scroll", "⇕"],
+    ["col-resize", "⇔"], ["row-resize", "⇕"], ["n-resize", "↑"], ["e-resize", "→"],
+    ["s-resize", "↓"], ["w-resize", "←"], ["ne-resize", "↗"], ["nw-resize", "↖"],
+    ["se-resize", "↘"], ["sw-resize", "↙"], ["ew-resize", "↔"], ["ns-resize", "↕"],
+    ["nesw-resize", "⤢"], ["nwse-resize", "⤡"], ["zoom-in", "🔍"], ["zoom-out", "🔎"],
+  ];
+
+  function svgCursor(svgMarkup, hx, hy, fallback) {
+    const encoded = encodeURIComponent(svgMarkup)
+      .replace(/'/g, "%27")
+      .replace(/"/g, "%22");
+    return `url("data:image/svg+xml;utf8,${encoded}") ${hx} ${hy}, ${fallback}`;
+  }
+
+  const CUSTOM_CURSORS = [
+    {
+      name: "anneau",
+      glyph: "◯",
+      css: svgCursor(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><circle cx='16' cy='16' r='11' fill='none' stroke='white' stroke-width='4'/><circle cx='16' cy='16' r='11' fill='none' stroke='black' stroke-width='1.5'/></svg>",
+        16, 16, "auto",
+      ),
+    },
+    {
+      name: "point",
+      glyph: "●",
+      css: svgCursor(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><circle cx='12' cy='12' r='6' fill='black' stroke='white' stroke-width='2.5'/></svg>",
+        12, 12, "auto",
+      ),
+    },
+    {
+      name: "flèche",
+      glyph: "➤",
+      css: svgCursor(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><path d='M4 3 L4 22 L9 17.5 L12.5 25 L16 23.5 L12.5 16.5 L19.5 16.5 Z' fill='black' stroke='white' stroke-width='1.8' stroke-linejoin='round'/></svg>",
+        4, 3, "default",
+      ),
+    },
+    {
+      name: "viseur",
+      glyph: "⌖",
+      css: svgCursor(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><g stroke='white' stroke-width='4' stroke-linecap='round'><path d='M18 3v9M18 24v9M3 18h9M24 18h9'/></g><g stroke='black' stroke-width='1.6' stroke-linecap='round'><path d='M18 3v9M18 24v9M3 18h9M24 18h9'/></g><circle cx='18' cy='18' r='2' fill='black'/></svg>",
+        18, 18, "crosshair",
+      ),
+    },
+    {
+      name: "lentille",
+      glyph: "◉",
+      css: svgCursor(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'><defs><radialGradient id='g' cx='35%' cy='30%' r='75%'><stop offset='0' stop-color='white' stop-opacity='.95'/><stop offset='.45' stop-color='#9fb4ff' stop-opacity='.35'/><stop offset='1' stop-color='#667eea' stop-opacity='.55'/></radialGradient></defs><circle cx='22' cy='22' r='18' fill='url(#g)' stroke='white' stroke-width='2'/><circle cx='22' cy='22' r='18.8' fill='none' stroke='rgba(0,0,0,.35)' stroke-width='1'/></svg>",
+        22, 22, "auto",
+      ),
+    },
+    {
+      name: "main",
+      glyph: "☝",
+      css: svgCursor(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'><path d='M11 3a2 2 0 0 1 4 0v9l2-.6a2 2 0 0 1 2.4 1.4l.3.1a2 2 0 0 1 2.7 1.4l.4.1a2 2 0 0 1 2.2 2.3L23.8 24a4 4 0 0 1-4 3.4h-5a4 4 0 0 1-3.3-1.8L7 20.2a2 2 0 0 1 3-2.5l1 .9z' fill='white' stroke='black' stroke-width='1.6' stroke-linejoin='round'/></svg>",
+        13, 3, "pointer",
+      ),
+    },
+  ];
+
+  function makeCursorTile(grid, name, glyph, cssValue) {
+    const tile = h("button", "cursor-tile", { cursor: cssValue }, grid);
+    tile.type = "button";
+    tile.dataset.name = name;
+
+    const g = h("div", "cursor-tile-glyph", null, tile);
+    g.textContent = glyph;
+    const n = h("div", "cursor-tile-name", null, tile);
+    n.textContent = name;
+    const hint = h("div", "cursor-tile-hint", null, tile);
+    hint.textContent = "clic = copier";
+
+    tile.addEventListener("click", () => {
+      const isCustom = cssValue.startsWith("url(");
+      const css = isCustom ? `cursor: ${cssValue};` : `cursor: ${name};`;
+      copyText(css, `Copié : ${isCustom ? "cursor: url(…)" : css}`);
+    });
+    return tile;
+  }
+
+  function buildCursorBank() {
+    const grid = document.getElementById("bankCursors");
+    const customGrid = document.getElementById("bankCustomCursors");
+    const search = document.getElementById("cursorSearch");
+    const count = document.getElementById("cursorCount");
+    if (!grid) return;
+
+    const tiles = CSS_CURSORS.map(([name, glyph]) => makeCursorTile(grid, name, glyph, name));
+
+    const empty = h("div", "cursor-empty", { display: "none" }, grid);
+    empty.textContent = "Aucun curseur ne correspond à la recherche.";
+
+    function updateCount(visible) {
+      if (count) count.textContent = `${visible} / ${CSS_CURSORS.length}`;
+    }
+    updateCount(CSS_CURSORS.length);
+
+    if (search) {
+      search.addEventListener("input", () => {
+        const q = search.value.trim().toLowerCase();
+        let visible = 0;
+        tiles.forEach((t) => {
+          const match = !q || t.dataset.name.includes(q);
+          t.style.display = match ? "" : "none";
+          if (match) visible++;
+        });
+        empty.style.display = visible ? "none" : "block";
+        updateCount(visible);
+      });
+    }
+
+    if (customGrid) {
+      CUSTOM_CURSORS.forEach((c) => makeCursorTile(customGrid, c.name, c.glyph, c.css));
+    }
+  }
+
+  /* ===================================================================
+     9. TÉLÉMÉTRIE + EXPORT
+     =================================================================== */
+
+  let fps = 0;
+  function startFpsCounter() {
+    let frames = 0;
+    let last = performance.now();
+    function tick(now) {
+      frames++;
+      if (now - last >= 500) {
+        fps = Math.round((frames * 1000) / (now - last));
+        frames = 0;
+        last = now;
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function setStat(key, html) {
+    const node = document.querySelector(`[data-stat="${key}"]`);
+    if (node) node.innerHTML = html;
+  }
+
+  function refreshStats() {
+    setStat("fps", `${fps} <small>fps</small>`);
+    setStat("mode", useBackdropFilter ? "backdrop-filter" : "clone");
+    setStat("surface", state.surfaceType.replace("_", " "));
+    setStat("displacement", `${state.maximumDisplacement.toFixed(1)} <small>px</small>`);
+    setStat("size", `${state.objectWidth}×${state.objectHeight} <small>r${state.radius}</small>`);
+    setStat("bezel", `${Math.round(state.bezelWidth)} <small>/</small> ${Math.round(state.glassThickness)}`);
+    setStat("refraction", state.refractionScale.toFixed(2));
+    setStat("position", `${Math.round(parseFloat(glassElement.style.left) || 0)}, ${Math.round(parseFloat(glassElement.style.top) || 0)}`);
+    setStat("sliders", String(registry.sliders.length));
+    setStat("switches", String(registry.switches.length));
+    setStat("filters", String(document.querySelectorAll("svg filter").length));
+    setStat("cache", String(mapCache.size));
+  }
+
+  function currentConfig() {
+    return {
+      surfaceType: state.surfaceType,
+      objectWidth: state.objectWidth,
+      objectHeight: state.objectHeight,
+      radius: state.radius,
+      bezelWidth: state.bezelWidth,
+      glassThickness: state.glassThickness,
+      refractiveIndex: state.refractiveIndex,
+      refractionScale: state.refractionScale,
+      specularOpacity: state.specularOpacity,
+      blur: state.blur,
+    };
+  }
+
+  function buildToolRow() {
+    const row = document.getElementById("toolRow");
+    if (!row) return;
+
+    const actions = [
+      {
+        label: "Copier la config (JSON)",
+        run: () => copyText(JSON.stringify(currentConfig(), null, 2), "Config copiée (JSON)"),
+      },
+      {
+        label: "Copier en CSS custom properties",
+        run: () => {
+          const c = currentConfig();
+          const css = [
+            ":root {",
+            `  --glass-surface: ${c.surfaceType};`,
+            `  --glass-width: ${c.objectWidth}px;`,
+            `  --glass-height: ${c.objectHeight}px;`,
+            `  --glass-radius: ${c.radius}px;`,
+            `  --glass-bezel: ${c.bezelWidth};`,
+            `  --glass-thickness: ${c.glassThickness};`,
+            `  --glass-refractive-index: ${c.refractiveIndex};`,
+            `  --glass-refraction: ${c.refractionScale};`,
+            `  --glass-specular: ${c.specularOpacity};`,
+            `  --glass-blur: ${c.blur};`,
+            "}",
+          ].join("\n");
+          copyText(css, "Config copiée (CSS)");
+        },
+      },
+      {
+        label: "Forcer l'état actif (tous les curseurs)",
+        run: () => {
+          const next = !registry._forced;
+          registry._forced = next;
+          registry.sliders.forEach((s) => s.setForceActive(next));
+          registry.switches.forEach((s) => s.setForceActive(next));
+          toast(next ? "Tous les verres sont actifs" : "État actif relâché");
+        },
+      },
+      {
+        label: "Réinitialiser la lentille",
+        run: () => {
+          applyLens(PRESETS[0]);
+          setActivePreset("Défaut");
+          toast("Lentille réinitialisée");
+        },
+      },
+    ];
+
+    actions.forEach((a) => {
+      const btn = h("button", "preset-btn", null, row);
+      btn.type = "button";
+      btn.textContent = a.label;
+      btn.addEventListener("click", a.run);
+    });
+  }
+
+  /* ===================================================================
+     10. NAVIGATION + DÉMARRAGE
+     =================================================================== */
+
+  function buildNav() {
+    const container = document.querySelector(".container");
+    const subtitle = document.querySelector(".subtitle");
+    if (!container || !subtitle) return;
+
+    const sections = document.querySelectorAll(".demo-section");
+    const knownIds = ["lentille", "demo-curseur", "demo-interrupteur"];
+    sections.forEach((sec, idx) => {
+      if (!sec.id && knownIds[idx]) sec.id = knownIds[idx];
+    });
+    const mapsSection = Array.from(sections).find((s) =>
+      s.querySelector("#displacementPreview"),
+    );
+    if (mapsSection && !mapsSection.id) mapsSection.id = "cartes";
+
+    const items = [
+      ["lentille", "Lentille"],
+      ["demo-curseur", "Slider"],
+      ["demo-interrupteur", "Switch"],
+      ["banque-curseurs", "Banque de curseurs"],
+      ["banque-interrupteurs", "Interrupteurs"],
+      ["banque-souris", "Curseurs souris"],
+      ["telemetrie", "Télémétrie"],
+      ["cartes", "Cartes générées"],
+    ];
+
+    const nav = h("nav", "top-nav", null, null);
+    nav.setAttribute("aria-label", "Sections");
+    const links = [];
+    items.forEach(([target, text]) => {
+      if (!document.getElementById(target)) return;
+      const a = h("a", null, null, nav);
+      a.href = "#" + target;
+      a.textContent = text;
+      links.push(a);
+    });
+    subtitle.insertAdjacentElement("afterend", nav);
+
+    // Lien actif selon la section visible
+    if ("IntersectionObserver" in window) {
+      const byId = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              links.forEach((l) => l.classList.remove("is-active"));
+              const link = byId.get(entry.target.id);
+              if (link) {
+                link.classList.add("is-active");
+                link.scrollIntoView({ block: "nearest", inline: "center" });
+              }
+            }
+          });
+        },
+        { rootMargin: "-30% 0px -60% 0px" },
+      );
+      byId.forEach((_, id) => observer.observe(document.getElementById(id)));
+    }
+  }
+
+  function initBank() {
+    buildPresetRow();
+    buildLensGroup();
+    buildColorGroup();
+    buildGradientGroup();
+    buildShapeGroup();
+    buildSurfaceGroup();
+    buildSwitchBank();
+    buildCursorBank();
+    buildToolRow();
+    buildNav();
+    startFpsCounter();
+    refreshStats();
+    setInterval(refreshStats, 300);
+
+    // Les positions des clones dépendent de la mise en page finale
+    window.addEventListener("load", () => registry.sliders.forEach((s) => s.refresh()));
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => registry.sliders.forEach((s) => s.refresh()));
+    }
+
+    console.log(
+      `Banque initialisée : ${registry.sliders.length} curseurs, ${registry.switches.length} interrupteurs, ${CSS_CURSORS.length + CUSTOM_CURSORS.length} curseurs souris`,
+    );
+  }
+
+  // API publique (utile pour réutiliser les fabriques ailleurs)
+  window.LiquidGlassBank = {
+    createGlassSlider,
+    createGlassSwitch,
+    applyLens,
+    PRESETS,
+    registry,
+    toast,
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBank);
+  } else {
+    initBank();
+  }
+})();
+
+    </script>
 </body>
 
 </html>
